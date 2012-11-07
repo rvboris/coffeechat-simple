@@ -1,0 +1,46 @@
+!!! 5
+html
+  head
+    title Coffeechat
+
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+
+    link(rel='stylesheet', type='text/css', href='css/style.css')
+
+    if (env == 'development')
+      script(data-main='../src/js/config', src='../src/js/libs/require.js')
+    else
+      script(src='js/require.js')
+  body
+    .loader(data-bind='visible: !chatModel.isReady()') Загрузка чата
+
+    #app(data-bind='visible: chatModel.isReady()', style='display: none')
+      .grid
+        .row
+          .span9
+           h1 Coffeechat
+        .row
+          .span5.username
+            h2(data-bind='jeditable: userModel.name') Гость
+          .offset4
+            button(type='button', data-bind='click: chatModel.exit').bg-color-red.fg-color-white.exit
+              i.icon-logout.white
+              span Выйти
+            button(type='button', data-bind='click: chatModel.invite').bg-color-green.fg-color-white.invite
+              i.icon-messages.white
+              span Пригласить
+        .row.info
+          .span9
+            span(data-bind='text: chatModel.usersOnline()') нет пользователей
+        .row
+          .span9(data-bind='foreach: chatModel.messages()').messages
+            .message
+              span(data-bind='text: formattedTime()').time
+              span(data-bind='text: formattedName()').name
+              span(data-bind='text: text()').text
+        .row
+          .span9.message-input
+            form(data-bind='submit: chatModel.send')
+              .input-control.text
+                input(type='text', name='text', maxlength='1500', autofocus='true', data-bind='enable: chatModel.canSend')

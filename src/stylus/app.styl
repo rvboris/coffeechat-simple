@@ -1,0 +1,47 @@
+body
+  .loader
+    margin 50px auto 0 auto
+    height 100px
+    text-align center
+    background url(../img/loader.gif) no-repeat center bottom
+
+#app
+  width 700px
+  margin 0 auto
+  .username
+    height 56px
+    h2
+      display inline-block
+      height 32px
+      border-bottom 1px dashed #000
+      form
+        position relative
+      input
+        position absolute
+        top 0
+        left 0
+        right 0
+        bottom 0
+        font-size 14px
+      form, input
+        height 32px
+        width 380px
+  
+  button.invite, button.exit
+    float right
+    margin-top 10px
+
+  .row.info
+    border-bottom 2px solid #000
+    line-height 25px
+
+  .row.messages
+    height 500px
+    overflow-y auto
+    .message
+      margin 4px 0
+      .text
+        word-wrap: break-word
+      .time, .name
+        margin-right 10px
+        display inline-block

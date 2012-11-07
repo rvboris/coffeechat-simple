@@ -1,0 +1,33 @@
+{
+    "name": "coffeechat",
+    "preferGlobal": "false",
+    "version": "0.1.0",
+    "author": "Boris Ryabov <rv.boris@gmail.com>",
+    "description": "a modern web chat multiroom system",
+    "contributors": [
+        {
+            "name": "Boris Ryabov",
+            "email": "rv.boris@gmail.com"
+        }
+    ],
+    "main": "./index.js",
+    "keywords": [
+        "chat"
+    ],
+    "dependencies" : {
+        "grunt": ">=0.3.15",
+        "grunt-contrib-clean": ">=0.3.0",
+        "grunt-contrib-jade": ">=0.3.0",
+        "grunt-contrib-stylus": ">=0.3.0",
+        "grunt-contrib-requirejs": ">=0.3.0",
+        "grunt-contrib-mincss": ">=0.3.0",
+        "grunt-contrib-less": ">=0.3.1"
+    },
+    "analyze": false,
+    "devDependencies": {},
+    "bundleDependencies": [],
+    "license": "Commercial",
+    "engines": {
+        "node": ">=0.8.x"
+    }
+}
