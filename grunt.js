@@ -1,10 +1,14 @@
 module.exports = function (grunt) {
+
+    var cdnHost = 'cdn.coffeechat.ru';
+
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-stylus');
     grunt.loadNpmTasks('grunt-contrib-jade');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-mincss');
     grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-bump');
 
     grunt.initConfig({
         clean: [
@@ -79,7 +83,9 @@ module.exports = function (grunt) {
         jade: {
             development: {
                 options: {
-                    data: { env: 'development' }
+                    data: {
+                        env: 'development'
+                    }
                 },
                 files: {
                     'public/index.html': 'src/jade/index.jade'
@@ -87,7 +93,12 @@ module.exports = function (grunt) {
             },
             production: {
                 options: {
-                    data: { env: 'production' }
+                    data: {
+                        env: 'production',
+                        version: function() {
+                            return grunt.file.readJSON('package.json').version || '1.0.0';
+                        }
+                    }
                 },
                 files: {
                     'public/index.html': 'src/jade/index.jade'
@@ -125,7 +136,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('main', 'clean lint stylus less concat:styles');
+    grunt.registerTask('main', 'clean bump lint stylus less concat:styles');
     grunt.registerTask('development', 'main jade:development mincss');
     grunt.registerTask('production', 'main jade:production requirejs concat:scripts min mincss');
 };
