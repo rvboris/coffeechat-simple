@@ -6,12 +6,13 @@ html
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
 
-    link(rel='stylesheet', type='text/css', href='css/style.css?v' + version())
-
     if (env == 'development')
+      link(rel='stylesheet', type='text/css', href='css/style.css')
       script(data-main='../src/js/config', src='../src/js/libs/require.js')
     else
-      script(src='js/require.js?v' + version())
+      link(rel='stylesheet', type='text/css', href='//' + cdnHost + '/css/style.css?v' + version())
+      script(src='//' + cdnHost + '/js/require.js?v' + version())
+
   body
     .loader(data-bind='visible: !chatModel.isReady()') Загрузка чата
 

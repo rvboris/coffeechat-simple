@@ -95,6 +95,7 @@ module.exports = function (grunt) {
                 options: {
                     data: {
                         env: 'production',
+                        cdnHost: cdnHost,
                         version: function() {
                             return grunt.file.readJSON('package.json').version || '1.0.0';
                         }
