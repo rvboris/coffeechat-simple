@@ -76,13 +76,11 @@ function ($, ko, hasher, jstorage, moment, $jgrowl, utils, pubnub, chatModel, ha
             pubnubModel.pubnub.history({
                 channel: pubnubModel.channel(),
                 limit: 100
-            }, function (messages) {
-                $.each(messages, function (idx, jsonMessage) {
-                    parseMessage(jsonMessage, function (message) {
-                        chatModel.messages.push(message);
-                    });
+            }, pubnubModel.historyHandler(function(message) {
+                parseMessage(message, function (message) {
+                    chatModel.messages.push(message);
                 });
-            });
+            }));
 
             chatModel.isReady(true);
         },
@@ -109,7 +107,6 @@ function ($, ko, hasher, jstorage, moment, $jgrowl, utils, pubnub, chatModel, ha
 
     hasher.initialized.add(function (currentHash) {
         var savedUser = jstorage.get('user');
-        var randomString = utils.randomString();
 
         if (savedUser) {
             try {
@@ -119,23 +116,23 @@ function ($, ko, hasher, jstorage, moment, $jgrowl, utils, pubnub, chatModel, ha
                 jstorage.flush();
             }
         }
-
+        
         if (currentHash !== '') {
             hashModel.fullHash(currentHash);
             if (userModel.id() === '') {
                 if (savedUser) {
                     hashModel.userId(savedUser.id);
                 } else {
-                    hashModel.userId(randomString);
+                    hashModel.userId(utils.randomString());
                 }
             }
         } else {
             if (savedUser) {
                 hashModel.userId(savedUser.id);
-                hashModel.channelId(utils.simpleHash(savedUser.id));
+                hashModel.channelId(utils.randomString());
             } else {
-                hashModel.userId(randomString);
-                hashModel.channelId(utils.simpleHash(randomString));
+                hashModel.userId(utils.randomString());
+                hashModel.channelId(utils.randomString());
             }
         }
 

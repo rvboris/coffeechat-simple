@@ -6,6 +6,8 @@ html
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
 
+    link(rel='icon', type='image/ico', href='favicon.ico')
+
     if (env == 'development')
       link(rel='stylesheet', type='text/css', href='css/style.css')
       script(data-main='../src/js/config', src='../src/js/libs/require.js')
@@ -22,9 +24,9 @@ html
           .span9
            h1 Coffeechat
         .row
-          .span5.username
+          .span6.username
             h2(data-bind='jeditable: userModel.name') Гость
-          .offset4
+          .span3
             button(type='button', data-bind='click: chatModel.exit').bg-color-red.fg-color-white.exit
               i.icon-logout.white
               span Выйти
@@ -32,8 +34,12 @@ html
               i.icon-messages.white
               span Пригласить
         .row.info
-          .span9
+          .span6
             span(data-bind='text: chatModel.usersOnline()') нет пользователей
+          .span3
+            label.switch
+              input(type='checkbox')
+              span звуковые уведомления
         .row
           .span9(data-bind='foreach: chatModel.messages()').messages
             .message

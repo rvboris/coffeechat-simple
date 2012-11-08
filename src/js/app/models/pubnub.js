@@ -25,6 +25,14 @@ define(['libs/jquery', 'libs/knockout', 'libs/pubnub', 'libs/gibberish-aes'], fu
                 this.pubnub.ready();
             }, this);
 
+            this.historyHandler = $.proxy(function(callback) {
+                return $.proxy(function(messages) {
+                    $.each(messages, function (idx, jsonMessage) {
+                        callback(gibberish.dec(jsonMessage, this.channel));
+                    });
+                }, this);
+            }, this);
+
             this.subscribe = $.proxy(function () {
                 this.pubnub.subscribe({
                     channel: this.channel(),
