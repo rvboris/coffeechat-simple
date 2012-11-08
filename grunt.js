@@ -140,7 +140,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('main', 'clean bump lint stylus less concat:styles');
-    grunt.registerTask('development', 'main jade:development mincss');
+    grunt.registerTask('main', 'clean lint stylus less concat:styles');
+    grunt.registerTask('development', 'main bump jade:development mincss');
     grunt.registerTask('production', 'main jade:production requirejs concat:scripts min mincss');
 };
