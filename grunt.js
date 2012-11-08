@@ -84,7 +84,10 @@ module.exports = function (grunt) {
             development: {
                 options: {
                     data: {
-                        env: 'development'
+                        env: 'development',
+                        version: function() {
+                            return grunt.file.readJSON('package.json').version || '1.0.0';
+                        }
                     }
                 },
                 files: {
