@@ -1,6 +1,25 @@
 module.exports = function (grunt) {
 
+    var version = function() {
+        return grunt.file.readJSON('package.json').version || '1.0.0';
+    };
+
+    var randomString = function () {
+        return Math.random().toString(36).substring(7);
+    };
+
     var cdnHost = 'cdn.coffeechat.ru';
+    var cssFileName = randomString() + '.css';
+    var jsFileName = randomString() + '.js';
+    
+    var jsMinConfig = {};
+    var cssMinConfig = {};
+
+    jsMinConfig['public/js/' + jsFileName] = 'src/js/compiled/require.js';
+
+    cssMinConfig.main = {};
+    cssMinConfig.main.files = {};
+    cssMinConfig.main.files['public/css/' + cssFileName] = 'public/css/' + cssFileName;
 
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-stylus');
@@ -85,9 +104,8 @@ module.exports = function (grunt) {
                 options: {
                     data: {
                         env: 'development',
-                        version: function() {
-                            return grunt.file.readJSON('package.json').version || '1.0.0';
-                        }
+                        version: version,
+                        cssFileName: cssFileName
                     }
                 },
                 files: {
@@ -99,9 +117,9 @@ module.exports = function (grunt) {
                     data: {
                         env: 'production',
                         cdnHost: cdnHost,
-                        version: function() {
-                            return grunt.file.readJSON('package.json').version || '1.0.0';
-                        }
+                        version: version,
+                        jsFileName: jsFileName,
+                        cssFileName: cssFileName
                     }
                 },
                 files: {
@@ -110,17 +128,8 @@ module.exports = function (grunt) {
             }
         },
 
-        min: {
-            'public/js/require.js': 'src/js/compiled/require.js'
-        },
-
-        mincss: {
-            main: {
-                files: {
-                    'public/css/style.css': 'public/css/style.css'
-                }
-            }
-        },
+        min: jsMinConfig,
+        mincss: cssMinConfig,
 
         concat: {
             styles: {
@@ -128,7 +137,7 @@ module.exports = function (grunt) {
                     'src/less/compiled/*.css',
                     'src/stylus/compiled/*.css'
                 ],
-                dest: 'public/css/style.css'
+                dest: 'public/css/' + cssFileName
             },
             scripts: {
                 src: [

@@ -9,11 +9,11 @@ html
     link(rel='icon', type='image/ico', href='favicon.ico')
 
     if (env == 'development')
-      link(rel='stylesheet', type='text/css', href='css/style.css?v' + version())
+      link(rel='stylesheet', type='text/css', href='css/' + cssFileName + '?v' + version())
       script(data-main='../src/js/config', src='../src/js/libs/require.js?v' + version())
     else
-      link(rel='stylesheet', type='text/css', href='//' + cdnHost + '/css/style.css?v' + version())
-      script(src='//' + cdnHost + '/js/require.js?v' + version())
+      link(rel='stylesheet', type='text/css', href='//' + cdnHost + '/css/' + cssFileName + '?v' + version())
+      script(src='//' + cdnHost + '/js/' + jsFileName + '?v' + version())
 
   body
     .loader(data-bind='visible: !chatModel.isReady()') Загрузка чата
