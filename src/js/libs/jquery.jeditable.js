@@ -173,7 +173,7 @@ define(['libs/jquery'], function ($) {
                     $(self).html('');
 
                     /* create the form object */
-                    var form = $('<form class="input-control text" />');
+                    var form = $('<form />');
 
                     /* apply css or style or both */
                     if (settings.cssclass) {

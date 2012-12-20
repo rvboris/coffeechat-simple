@@ -20,5 +20,9 @@ define(['libs/knockout'], function (ko) {
             },
             owner: this
         });
+
+        this.getLink = function () {
+            return window.location.protocol + '//' + window.location.host + '/#' + this.channelId();
+        };
     };
 });

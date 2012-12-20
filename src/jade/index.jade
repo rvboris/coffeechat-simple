@@ -1,53 +1,75 @@
 !!! 5
-html
-  head
-    title Coffeechat
 
-    meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+//if lt IE 7
+  html.no-js.lt-ie9.lt-ie8.lt-ie7
+//if IE 7
+  html.no-js.lt-ie9.lt-ie8
+//if IE 8
+  html.no-js.lt-ie9
+//if gt IE 8
+  html.no-js
 
-    link(rel='icon', type='image/ico', href='favicon.ico')
+head
+  meta(charset='utf-8')
+  meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+  meta(name='viewport', content='width=device-width, initial-scale=1.0')
 
-    if (env == 'development')
-      link(rel='stylesheet', type='text/css', href='css/' + cssFileName + '?v' + version())
-      script(data-main='../src/js/config', src='../src/js/libs/require.js?v' + version())
-    else
-      link(rel='stylesheet', type='text/css', href='//' + cdnHost + '/css/' + cssFileName + '?v' + version())
-      script(src='//' + cdnHost + '/js/' + jsFileName + '?v' + version())
+  title Coffeechat
 
-  body
-    .loader(data-bind='visible: !chatModel.isReady()') Загрузка чата
+  link(rel='icon', type='image/ico', href='img/favicon.ico')
 
-    #app(data-bind='visible: chatModel.isReady()', style='display: none')
-      .grid
-        .row
-          .span9
-           h1 Coffeechat
-        .row
-          .span6.username
-            h2(data-bind='jeditable: userModel.name') Гость
-          .span3
-            button(type='button', data-bind='click: chatModel.exit').bg-color-red.fg-color-white.exit
-              i.icon-logout.white
-              span Выйти
-            button(type='button', data-bind='click: chatModel.invite').bg-color-green.fg-color-white.invite
-              i.icon-messages.white
-              span Пригласить
-        .row.info
-          .span6
-            span(data-bind='text: chatModel.usersOnline()') нет пользователей
-          .span3
-            label.switch
-              input(type='checkbox')
-              span звуковые уведомления
-        .row
-          .span9(data-bind='foreach: chatModel.messages()').messages
-            .message
-              span(data-bind='text: formattedTime()').time
-              span(data-bind='text: formattedName()').name
-              span(data-bind='text: text()').text
-        .row
-          .span9.message-input
-            form(data-bind='submit: chatModel.send')
-              .input-control.text
-                input(type='text', name='text', maxlength='1500', autofocus='true', data-bind='enable: chatModel.canSend')
+  if (env == 'development')
+    link(rel='stylesheet', type='text/css', href='css/' + cssFileName + '?v' + version())
+  else
+    link(rel='stylesheet', type='text/css', href='//' + cdnHost + '/css/' + cssFileName + '?v' + version())
+
+body
+  //if lt IE 8
+    p.chromeframe You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.
+
+  .notifications.top-right
+
+  #loader(data-bind='visible: !chatModel.isReady()')
+
+  #app.container(data-bind='visible: chatModel.isReady()', style='display: none')
+    .row.header
+      .span12
+        h1 Coffeechat
+        span.label.label-info beta
+    .row.controls
+      .span9.username
+        h2(data-bind='css: { edit: userModel.nameEditable(), error: userModel.nameEditableError() }, click: userModel.toogleNameEditable, jeditable: userModel.name').input-xlarge Гость
+      .span3.btn-group.main-buttons
+        button(type='button', data-bind='click: chatModel.invite', data-toggle='button').btn.btn-success.invite
+          i.icon-user.icon-white
+          |  Пригласить
+        button(type='button', data-bind='click: chatModel.exit').btn.btn-danger.exit
+          i.icon-off.icon-white
+          |  Выйти
+    .row
+      .span9.online
+        span(data-bind='text: chatModel.usersOnline(), css: { muted: chatModel.online() === 0, "text-info": chatModel.online() === 1, "text-success": chatModel.online() > 1 }') нет пользователей
+      .span3.audio
+        | Звуковые уведомления
+        button(type='button', data-bind='click: userModel.toogleAudio').btn.active
+          i(data-bind='css: { on: userModel.paramAudio(), off: !userModel.paramAudio(), "btn-info": userModel.paramAudio(), "btn-inverse": !userModel.paramAudio() }').btn
+          i(data-bind='text: userModel.paramAudioText()').text
+    .row
+      pre.span12(data-bind='foreach: chatModel.messages(), style: chatModel.style()').messages
+        .message
+          span(data-bind='text: formattedTime()').time
+          span(data-bind='text: formattedName()').name
+          span(data-bind='text: text()').text
+    .row
+      .span12.message-input
+        form(data-bind='submit: chatModel.send')
+          .input-append
+            .input-wrapper.clearfix
+              input(type='text', name='text', placeholder='сообщение', maxlength='1500', autofocus='true', data-bind='enable: chatModel.canSend()').input-block-level
+            button(type='submit', data-bind='enable: chatModel.canSend()').btn.btn-primary
+              i.icon-comment.icon-white
+              |  Отправить
+  if (env == 'development')
+    script(defer='true', data-main='../src/js/config', src='../src/js/libs/require.js?v' + version())
+  else
+    script(defer='true', src='//' + cdnHost + '/js/' + jsFileName + '?v' + version())

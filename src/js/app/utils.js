@@ -15,6 +15,35 @@ define([], function () {
         },
         isAlphanumeric: function (str) {
             return (/^[a-zа-я0-9\s]+$/i).test(str);
+        },
+        deferChecker: function(callback, test, failback, limit, speed) {
+            if (typeof failback !== 'function') {
+                failback = function() {};
+            }
+
+            if (typeof limit !== 'number') {
+                limit = 10;
+            }
+
+            if (typeof speed !== 'number') {
+                speed = 10;
+            }
+
+            var interval = setInterval(function() {
+                limit--;
+
+                if (limit <= 0) {
+                    clearInterval(interval);
+                    return failback();
+                }
+
+                var result = test();
+
+                if (result !== false) {
+                    clearInterval(interval);
+                    callback(result);
+                }
+            }, speed);
         }
     };
 });

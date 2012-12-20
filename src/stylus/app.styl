@@ -1,52 +1,80 @@
-body
-  .loader
-    margin 50px auto 0 auto
-    height 100px
-    text-align center
-    background url(../img/loader.gif) no-repeat center bottom
+#loader
+  margin 50px auto 0 auto
 
 #app
-  width 700px
-  margin 0 auto
-  
-  .username
-    height 56px
-    h2
-      display inline-block
-      height 32px
-      border-bottom 1px dashed #000
-      form
-        position relative
-      input
-        position absolute
-        top 0
-        left 0
-        right 0
-        bottom 0
-        font-size 14px
-      form, input
-        height 32px
-        width 380px
-  
-  button.invite, button.exit
-    float right
-    margin-top 10px
-  button.exit
-    margin-right 0
+  .header h1, .header span
+    font-smooth always
+    float left
+  .header span
+    margin 10px 0 0 10px
+  .main-buttons, .audio
+    text-align right
+  .main-buttons .popover
+    width 325px
+    input
+      cursor text
 
-  .info
-    border-bottom 2px solid #000
-    line-height 35px
-    .span3
-      line-height 25px
+  .controls
+    margin-bottom 10px  
+
+  .username
+    form, input
+      margin 0
+      width inherit
+    h2
+      font-size 14px
+      line-height 30px
+      margin 0
+      font-weight lighter
+      border-bottom 1px dashed #CCC
+      &.edit
+        border-bottom none
+        line-height 30px
+      &.error
+        border-bottom 1px solid red !important
+
+  .online
+    line-height 30px
+
+  .audio > button
+    padding 2px
+    width 75px
+    margin-left 5px
+    & > i
+      &.on, &.off
+        height 9px
+      &.on
+        float left
+      &.off
+        float right
+      &.text
+        margin 0 5px
 
   .messages
     height 500px
     overflow-y auto
+    box-sizing border-box
+    margin-top 10px
+
     .message
       margin 4px 0
-      .text
-        word-wrap: break-word
-      .time, .name
-        margin-right 10px
-        display inline-block
+    .text
+      word-wrap: break-word
+    .time, .name
+      margin-right 10px
+      display inline-block
+
+  .message-input
+    position relative
+    .input-wrapper
+      width 100%
+      box-sizing border-box
+      padding 4px 120px 4px 0
+      input
+        width inherit
+
+    button
+      width 120px
+      position absolute
+      right 0
+      top 4px

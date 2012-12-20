@@ -1,22 +1,22 @@
-define(['libs/jquery', 'libs/knockout', 'app/utils', 'libs/jstorage', 'libs/hasher', 'libs/jquery.jgrowl', 'libs/jquery.scrollTo', 'libs/tinycon', 'models/message'],
+define(['libs/jquery', 'libs/knockout', 'app/utils', 'libs/jstorage', 'libs/hasher', 'libs/bootstrap', 'libs/bootstrap.notify', 'libs/jquery.scrollTo', 'libs/tinycon', 'libs/buzz', 'models/message'],
 
-function ($, ko, utils, jstorage, hasher, $jgrowl, $scrollTo, Tinycon, MessageModel) {
+function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinycon, Buzz, MessageModel) {
+    var unreadCounter = 0;
+
+    var incomingMessageSound = new Buzz.sound('media/incoming-message', {
+        formats: ['ogg', 'mp3']
+    });
+
     var ChatModel = function(pubnubModel, userModel) {
         this.isReady = ko.observable(false);
         this.isActive = ko.observable(true);
-
-        this.isReady.subscribe($.proxy(function(ready) {
-            this.canSend(ready);
-        }, this));
-
-        this.scrollToBottom = function() {
-            $scrollTo('#app .messages').scrollTo('max', 5, {
-                queue: false,
-                axis: 'y'
-            });
-        };
-
+        this.messages = ko.observableArray();
         this.online = ko.observable(0);
+        this.canSend = ko.observable(false);
+
+        this.style = ko.observable({
+            height: '0px'
+        });
 
         this.usersOnline = ko.computed({
             write: function (value) {
@@ -28,24 +28,40 @@ function ($, ko, utils, jstorage, hasher, $jgrowl, $scrollTo, Tinycon, MessageMo
             owner: this
         });
 
-        this.messages = ko.observableArray();
+        this.isReady.subscribe($.proxy(function(ready) {
+            this.canSend(ready);
+        }, this));
 
-        var unreadCounter = 0;
+        this.isActive.subscribe($.proxy(function(active) {
+            if (!active) Tinycon.reset();
+        }, this));
 
         this.messages.subscribe($.proxy(function () {
             if (!this.isActive()) {
                 unreadCounter++;
+
+                if (userModel.paramsAudio()) {
+                    incomingMessageSound.play();
+                }
             } else {
                 unreadCounter = 0;
             }
 
             Tinycon.setBubble(unreadCounter);
+            Tinycon.setOptions({
+                fallback: true
+            });
 
             this.scrollToBottom();
         }, this));
 
-        this.invite = function () {
+        this.style.subscribe($.proxy(function () {
+            this.scrollToBottom();
+        }, this));
 
+        this.invite = function (data, event) {
+            $bootstrap(event.currentTarget).popover('toggle');
+            $('#share-link').focus();
         };
         
         this.exit = function () {
@@ -58,17 +74,24 @@ function ($, ko, utils, jstorage, hasher, $jgrowl, $scrollTo, Tinycon, MessageMo
             window.location.reload();
         };
 
-        this.canSend = ko.observable(false);
+        this.scrollToBottom = function() {
+            $scrollTo('#app .messages').scrollTo('max', 5, {
+                queue: false,
+                axis: 'y'
+            });
+        };
 
         this.send = $.proxy(function (form) {
             var input = $(form).find('input');
             var value = input.val();
 
             if (utils.isEmpty(value)) {
-                $jgrowl.jGrowl('Сообщение не может быть пустым', {
-                    header: 'Ошибка',
-                    lifetime: 3000
-                });
+                $notify('.notifications').notify({
+                    type: 'warning',
+                    fadeOut: { enabled: true, delay: 3000 },
+                    message: { text: 'Сообщение не может быть пустым' }
+                }).show();
+
                 return input.addClass('border-color-red');
             }
 

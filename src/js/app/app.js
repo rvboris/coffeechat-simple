@@ -1,7 +1,9 @@
-define(['libs/jquery', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'libs/jquery.jgrowl', 'app/utils', 'models/pubnub', 'models/chat', 'models/hash', 'models/user', 'models/message'],
+define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'app/utils', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
 
-function ($, ko, hasher, jstorage, moment, $jgrowl, utils, pubnub, chatModel, hashModel, userModel, MessageModel) {
+function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, moment, utils, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
     'use strict';
+
+    $('#loader').spin();
 
     var pubnubParams = {
         restore: false,
@@ -25,8 +27,23 @@ function ($, ko, hasher, jstorage, moment, $jgrowl, utils, pubnub, chatModel, ha
             return;
         }
 
+        var messages = chatModel.messages();
         var message = new MessageModel();
         var time = moment(jsonMessage.time);
+
+        var checkRepeat = function(currentName) {
+            if (messages.length > 0) {
+                var lastName = messages[messages.length - 1].name();
+
+                if (lastName === currentName || lastName === message.repeatName) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            return false;
+        };
 
         if (time.isValid()) {
             message.time(time);
@@ -36,8 +53,8 @@ function ($, ko, hasher, jstorage, moment, $jgrowl, utils, pubnub, chatModel, ha
             jsonMessage.name = 'Неизвестный';
         }
 
-        if (jsonMessage.name === userModel.name()) {
-            message.name('Я');
+        if (checkRepeat(jsonMessage.name)) {
+            message.name(message.repeatName);
         } else {
             message.name(jsonMessage.name);
         }
@@ -75,7 +92,10 @@ function ($, ko, hasher, jstorage, moment, $jgrowl, utils, pubnub, chatModel, ha
 
             pubnubModel.pubnub.history({
                 channel: pubnubModel.channel(),
-                limit: 100
+                limit: 100,
+                error: function() {
+                    console.log('history error');
+                }
             }, pubnubModel.historyHandler(function(message) {
                 parseMessage(message, function (message) {
                     chatModel.messages.push(message);
@@ -104,6 +124,13 @@ function ($, ko, hasher, jstorage, moment, $jgrowl, utils, pubnub, chatModel, ha
     userModel.name.subscribe(function (newId) {
         jstorage.set('user', ko.toJSON(userModel));
     });
+
+    userModel.paramAudio.subscribe(function (audio) {
+        userModel.paramAudioText(audio ? 'выкл' : 'вкл');
+        jstorage.set('user', ko.toJSON(userModel));
+    });
+
+    hasher.prependHash = '';
 
     hasher.initialized.add(function (currentHash) {
         var savedUser = jstorage.get('user');
@@ -139,6 +166,7 @@ function ($, ko, hasher, jstorage, moment, $jgrowl, utils, pubnub, chatModel, ha
         if (savedUser) {
             userModel.id(savedUser.id);
             userModel.name(savedUser.name);
+            userModel.paramAudio(savedUser.paramAudio);
         }
     });
 
@@ -157,24 +185,71 @@ function ($, ko, hasher, jstorage, moment, $jgrowl, utils, pubnub, chatModel, ha
         };
 
         var heightControl = function (currentHeight) {
-            var heightOffset = 250;
-            $('#app .messages').css('height', (currentHeight - heightOffset) + 'px');
+            var heightOffset = 0;
+            var rows = $('.row');
+
+            var complete = function(height) {
+                chatModel.style({ height: height + 'px' });
+            };
+
+            rows.each(function(idx, element) {
+                if (idx === 3) {
+                    return;
+                }
+
+                utils.deferChecker(function (height) {
+                    heightOffset += height;
+
+                    if (idx === rows.length - 1) {
+                        complete(currentHeight - heightOffset);
+                    }
+                }, function() {
+                    var height = $(element).outerHeight();
+                    return height > 0 ? height : false;
+                });
+            });
         };
 
-        $(window).hover(function(e) {
-            if (e.fromElement) {
-                chatModel.isActive(false);
-            } else {
-                chatModel.isActive(true);
+        Visibility.change(function (e, state) {
+            if (state === 'hidden') {
+                return chatModel.isActive(false);
+            }
+
+            if (state === 'visible') {
+                return chatModel.isActive(true);
             }
         });
 
         $(window).resize(function() {
-            heightControl($(window).height());
-            chatModel.scrollToBottom();
+            if (chatModel.isActive()) {
+                heightControl($(window).height());
+            }
         });
 
-        heightControl($(window).height());
+        chatModel.isReady.subscribe(function(isReady) {
+            if (isReady) {
+                heightControl($(window).height());
+            }
+        });
+
+        $bootstrap('.main-buttons .invite').popover({
+            trigger: 'manual',
+            placement: 'left',
+            html: true,
+            title: 'Пригласить участника',
+            content: Templates.invite({ link: hashModel.getLink() })
+        });
+
+        $('.main-buttons')
+            .on('focus', '#share-link', function() {
+                $(this).select();
+            })
+            .on('click', '.input-append', function(e) {
+                $(e.currentTarget).find('input').select();
+            })
+            .on('mouseup', '#share-link', function(e) {
+                e.preventDefault();
+            });
 
         ko.applyBindings(new MasterModel(), $('body').get(0));
     });

@@ -3,5 +3,11 @@ require.config({
     paths: {
         libs: 'libs',
         models: 'app/models'
+    },
+    shim: {
+        'compiled/templates': {
+            exports: 'Templates',
+            deps: ['libs/handlebars']
+        }
     }
 });
