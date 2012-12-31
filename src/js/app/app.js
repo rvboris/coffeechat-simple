@@ -79,17 +79,6 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
             }
         },
         connect: function () {
-            pubnubModel.pubnub.here_now({
-                channel: pubnubModel.channel(),
-                callback: function (event) {
-                    chatModel.usersOnline(event.occupancy);
-
-                    if (userModel.name() === userModel.defaultName) {
-                        userModel.name(userModel.defaultName + ' ' + chatModel.online().toString());
-                    }
-                }
-            });
-
             pubnubModel.pubnub.history({
                 channel: pubnubModel.channel(),
                 limit: 100,
@@ -108,6 +97,10 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
         },
         presence: function (event) {
             chatModel.usersOnline(event.occupancy);
+
+            if (userModel.name() === userModel.defaultName) {
+                userModel.name(userModel.defaultName + ' ' + chatModel.online().toString());
+            }
         }
     };
 
