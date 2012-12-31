@@ -33,6 +33,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-bump');
+    grunt.loadNpmTasks('grunt-wrap');
 
     grunt.initConfig({
         clean: {
@@ -125,6 +126,14 @@ module.exports = function (grunt) {
             }
         },
 
+        wrap: {
+            modules: {
+                src: 'src/js/compiled/templates.js',
+                dest: '.',
+                wrapper: ['define(["libs/handlebars"], function (Handlebars) {', 'return this.Templates;});']
+            }
+        },
+
         jade: {
             development: {
                 options: {
@@ -175,7 +184,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'less', 'concat:styles', 'handlebars']);
+    grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'less', 'concat:styles', 'handlebars', 'wrap']);
     grunt.registerTask('development', ['main', 'bump', 'jade:development', 'mincss']);
     grunt.registerTask('production', ['main', 'jade:production', 'requirejs', 'concat:scripts', 'uglify', 'mincss']);
 };
