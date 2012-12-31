@@ -1,0 +1,7 @@
+node_modules
+public/css
+public/js
+src/js/compiled
+src/stylus/compiled
+src/less/compiled
+public/index.html
