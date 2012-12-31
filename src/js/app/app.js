@@ -94,7 +94,9 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
                 channel: pubnubModel.channel(),
                 limit: 100,
                 error: function() {
-                    console.log('history error');
+                    if (console) {
+                        console.log('history error');
+                    }
                 }
             }, pubnubModel.historyHandler(function(message) {
                 parseMessage(message, function (message) {

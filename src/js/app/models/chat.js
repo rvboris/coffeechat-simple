@@ -107,6 +107,10 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
             message.name(userModel.name());
             message.text(value);
 
+            delete message.repeatName;
+            delete message.formattedTime;
+            delete message.formattedName;
+
             pubnubModel.pubnub.publish({
                 channel: pubnubModel.channel(),
                 message: ko.toJSON(message),

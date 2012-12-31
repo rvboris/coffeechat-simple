@@ -70,6 +70,6 @@ body
               i.icon-comment.icon-white
               |  Отправить
   if (env == 'development')
-    script(defer='true', data-main='../src/js/config', src='../src/js/libs/require.js?v' + version())
+    script(defer='true', async="true", data-main='../src/js/config', src='../src/js/libs/require.js?v' + version())
   else
-    script(defer='true', src='//' + cdnHost + '/js/' + jsFileName + '?v' + version())
+    script(defer='true', async="true", src='//' + cdnHost + '/js/' + jsFileName + '?v' + version())
