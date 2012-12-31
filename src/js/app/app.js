@@ -29,7 +29,7 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
 
         var messages = chatModel.messages();
         var message = new MessageModel();
-        var time = moment(jsonMessage.time);
+        var time = moment.unix(jsonMessage.time);
 
         var checkRepeat = function(currentName) {
             if (messages.length > 0) {

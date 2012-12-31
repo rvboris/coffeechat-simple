@@ -103,7 +103,7 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
 
             var message = new MessageModel();
 
-            message.time(moment().toString());
+            message.time(moment().unix());
             message.name(userModel.name());
             message.text(value);
 
