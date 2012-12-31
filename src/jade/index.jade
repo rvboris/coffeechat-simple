@@ -38,7 +38,7 @@ body
         span.label.label-info beta
     .row.controls
       .span9.username
-        h2(data-bind='css: { edit: userModel.nameEditable(), error: userModel.nameEditableError() }, click: userModel.toogleNameEditable, jeditable: userModel.name').input-xlarge Гость
+        h2(data-placement='bottom', data-original-title='Нажмите чтобы изменить имя', data-bind='css: { edit: userModel.nameEditable(), error: userModel.nameEditableError() }, click: userModel.toogleNameEditable, jeditable: userModel.name').input-xlarge Гость
       .span3.btn-group.main-buttons
         button(type='button', data-bind='click: chatModel.invite', data-toggle='button').btn.btn-success.invite
           i.icon-user.icon-white

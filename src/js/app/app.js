@@ -185,7 +185,7 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
         };
 
         var heightControl = function (currentHeight) {
-            var heightOffset = 0;
+            var heightOffset = $('.messages').outerHeight(true) - $('.messages').height();
             var rows = $('.row');
 
             var complete = function(height) {
@@ -204,7 +204,7 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
                         complete(currentHeight - heightOffset);
                     }
                 }, function() {
-                    var height = $(element).outerHeight();
+                    var height = $(element).outerHeight(true);
                     return height > 0 ? height : false;
                 });
             });
@@ -250,6 +250,8 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
             .on('mouseup', '#share-link', function(e) {
                 e.preventDefault();
             });
+
+        $bootstrap('.username h2').tooltip();
 
         ko.applyBindings(new MasterModel(), $('body').get(0));
     });
