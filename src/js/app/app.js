@@ -93,14 +93,19 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
                 });
             }));
 
+            pubnubModel.pubnub.here_now({
+                channel: pubnubModel.channel(),
+                callback: function(event) {
+                    if (userModel.name() === userModel.defaultName) {
+                        userModel.name(userModel.defaultName + ' ' + (event.occupancy + 1).toString());
+                    }
+                }
+            });
+
             chatModel.isReady(true);
         },
         presence: function (event) {
             chatModel.usersOnline(event.occupancy);
-
-            if (userModel.name() === userModel.defaultName) {
-                userModel.name(userModel.defaultName + ' ' + chatModel.online().toString());
-            }
         }
     };
 
