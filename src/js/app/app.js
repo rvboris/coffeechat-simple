@@ -97,7 +97,7 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
                 channel: pubnubModel.channel(),
                 callback: function(event) {
                     if (userModel.name() === userModel.defaultName) {
-                        userModel.name(userModel.defaultName + ' ' + (event.occupancy === 0 ? 1 : event.occupancy).toString());
+                        userModel.name(userModel.defaultName + ' ' + (event.occupancy === 0 ? 1 : event.occupancy + 1).toString());
                     }
                 }
             });
@@ -121,19 +121,12 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
         pubnubModel.channel(newChannel.toString());
     });
 
-    userModel.name.subscribe(function (newName) {
-        if (newName.indexOf(userModel.defaultName) < 0) {
-            jstorage.set('user', ko.toJSON(userModel));
-        }
-    });
-
     userModel.paramAudio.subscribe(function (audio) {
         userModel.paramAudioText(audio ? 'выкл' : 'вкл');
-        var savedUser = ko.toJSON(userModel);
-
-        if (savedUser.name.indexOf(userModel.defaultName) < 0) {
-            jstorage.set('user', savedUser);
-        }
+        jstorage.set('user', {
+            id: userModel.id(),
+            paramAudio: userModel.paramAudio()
+        });
     });
 
     hasher.prependHash = '';
@@ -171,7 +164,6 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
 
         if (savedUser) {
             userModel.id(savedUser.id);
-            userModel.name(savedUser.name);
             userModel.paramAudio(savedUser.paramAudio);
         }
     });
@@ -179,7 +171,10 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
     hasher.init();
     hasher.replaceHash(hashModel.fullHash());
 
-    jstorage.set('user', ko.toJSON(userModel));
+    jstorage.set('user', {
+        id: userModel.id(),
+        paramAudio: userModel.paramAudio()
+    });
 
     pubnubModel.init();
     pubnubModel.subscribe();
