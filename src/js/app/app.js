@@ -97,7 +97,7 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
                 channel: pubnubModel.channel(),
                 callback: function(event) {
                     if (userModel.name() === userModel.defaultName) {
-                        userModel.name(userModel.defaultName + ' ' + (event.occupancy + 1).toString());
+                        userModel.name(userModel.defaultName + ' ' + (event.occupancy === 0 ? 1 : event.occupancy).toString());
                     }
                 }
             });
@@ -121,13 +121,19 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
         pubnubModel.channel(newChannel.toString());
     });
 
-    userModel.name.subscribe(function (newId) {
-        jstorage.set('user', ko.toJSON(userModel));
+    userModel.name.subscribe(function (newName) {
+        if (newName.indexOf(userModel.defaultName) < 0) {
+            jstorage.set('user', ko.toJSON(userModel));
+        }
     });
 
     userModel.paramAudio.subscribe(function (audio) {
         userModel.paramAudioText(audio ? 'выкл' : 'вкл');
-        jstorage.set('user', ko.toJSON(userModel));
+        var savedUser = ko.toJSON(userModel);
+
+        if (savedUser.name.indexOf(userModel.defaultName) < 0) {
+            jstorage.set('user', savedUser);
+        }
     });
 
     hasher.prependHash = '';
