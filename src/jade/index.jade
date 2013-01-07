@@ -59,7 +59,7 @@ body
         .message
           span(data-bind='text: formattedTime()').time
           span(data-bind='text: formattedName()').name
-          span(data-bind='text: text()').text
+          span(data-bind='html: text()').text
     .row
       .span12.message-input
         form(data-bind='submit: chatModel.send')

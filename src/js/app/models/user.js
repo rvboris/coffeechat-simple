@@ -48,6 +48,7 @@ define(['libs/jquery', 'libs/knockout', 'libs/jquery.jeditable', 'libs/bootstrap
                             fadeOut: { enabled: true, delay: 3000 },
                             message: { text: 'Имя введено не верно' }
                         }).show();
+                        
                         return valueAccessor()();
                     }
                 } else {

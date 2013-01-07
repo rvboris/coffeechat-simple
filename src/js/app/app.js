@@ -31,20 +31,6 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
         var message = new MessageModel();
         var time = moment.unix(jsonMessage.time);
 
-        var checkRepeat = function(currentName) {
-            if (messages.length > 0) {
-                var lastName = messages[messages.length - 1].name();
-
-                if (lastName === currentName || lastName === message.repeatName) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-
-            return false;
-        };
-
         if (time.isValid()) {
             message.time(time);
         }
@@ -53,7 +39,7 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
             jsonMessage.name = 'Неизвестный';
         }
 
-        if (checkRepeat(jsonMessage.name)) {
+        if (utils.objectEquals(jsonMessage, chatModel.lastMessage())) {
             message.name(message.repeatName);
         } else {
             message.name(jsonMessage.name);

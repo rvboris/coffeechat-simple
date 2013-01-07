@@ -44,6 +44,52 @@ define([], function () {
                     callback(result);
                 }
             }, speed);
+        },
+        objectEquals: function(a, b) {
+            if (!a || !b) {
+                return false;
+            }
+
+            var p;
+            
+            for (p in a) {
+                if (typeof(b[p]) === 'undefined') {
+                    return false;
+                }
+            }
+
+            for (p in a) {
+                if (a[p]) {
+                    switch (typeof(a[p])) {
+                        case 'object':
+                            if (!a[p].equals(b[p])) {
+                                return false;
+                            }
+                            break;
+                        case 'function':
+                            if (typeof(b[p]) === 'undefined' || (p !== 'equals' && a[p].toString() !== b[p].toString())) {
+                                return false;
+                            }
+                            break;
+                        default:
+                            if (a[p] !== b[p]) {
+                                return false;
+                            }
+                    }
+                } else {
+                    if (b[p]) {
+                        return false;
+                    }
+                }
+            }
+
+            for (p in b) {
+                if (typeof(a[p]) === 'undefined') {
+                    return false;
+                }
+            }
+
+            return true;
         }
     };
 });

@@ -7,10 +7,13 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
         formats: ['ogg', 'mp3']
     });
 
+    var exitTimeout;
+
     var ChatModel = function(pubnubModel, userModel) {
         this.isReady = ko.observable(false);
         this.isActive = ko.observable(true);
         this.messages = ko.observableArray();
+        this.lastMessage = ko.observable();
         this.online = ko.observable(0);
         this.canSend = ko.observable(false);
 
@@ -33,7 +36,15 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
         }, this));
 
         this.isActive.subscribe($.proxy(function(active) {
-            if (!active) Tinycon.reset();
+            if (!active) {
+                Tinycon.reset();
+
+                exitTimeout = setTimeout($.proxy(function() {
+                    this.exit();
+                }, this), 900000); // 15 min
+            } else {
+                clearTimeout(exitTimeout);
+            }
         }, this));
 
         this.messages.subscribe($.proxy(function () {
@@ -111,9 +122,13 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
             delete message.formattedTime;
             delete message.formattedName;
 
+            message = ko.toJS(message);
+
+            this.lastMessage(message);
+
             pubnubModel.pubnub.publish({
                 channel: pubnubModel.channel(),
-                message: ko.toJSON(message),
+                message: JSON.stringify(message),
                 callback: $.proxy(function (info) {
                     this.canSend(true);
 
