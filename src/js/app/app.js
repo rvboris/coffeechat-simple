@@ -27,7 +27,6 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
             return;
         }
 
-        var messages = chatModel.messages();
         var message = new MessageModel();
         var time = moment.unix(jsonMessage.time);
 
@@ -53,7 +52,9 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
     var pubnubDispatcher = {
         callback: function (jsonMessage) {
             parseMessage(jsonMessage, function (message) {
-                chatModel.messages.push(message);
+                var messages = chatModel.messages();
+                messages.push(message);
+                chatModel.messages.valueHasMutated();
             });
         },
         disconnect: function () {
@@ -75,7 +76,9 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
                 }
             }, pubnubModel.historyHandler(function(message) {
                 parseMessage(message, function (message) {
-                    chatModel.messages.push(message);
+                    var messages = chatModel.messages();
+                    messages.push(message);
+                    chatModel.messages.valueHasMutated();
                 });
             }));
 
