@@ -1,6 +1,6 @@
-define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'app/utils', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
+define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
 
-function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, moment, utils, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
+function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, moment, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
     'use strict';
 
     $('#loader').spin();
@@ -34,8 +34,20 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
             message.time(time);
         }
 
+        message.text(jsonMessage.text);
+
         if (utils.isEmpty(jsonMessage.name)) {
             jsonMessage.name = 'Неизвестный';
+        }
+
+        if (message.type() === 'system') {
+            if (utils.objectEquals(jsonMessage, chatModel.lastSystemMessage())) {
+                return;
+            }
+            
+            message.name(jsonMessage.name);
+            callback(message);
+            return;
         }
 
         if (utils.objectEquals(jsonMessage, chatModel.lastMessage())) {
@@ -44,17 +56,21 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
             message.name(jsonMessage.name);
         }
 
-        message.text(jsonMessage.text);
-
         callback(message);
     };
 
     var pubnubDispatcher = {
         callback: function (jsonMessage) {
             parseMessage(jsonMessage, function (message) {
-                var messages = chatModel.messages();
-                messages.push(message);
-                chatModel.messages.valueHasMutated();
+                if (message.type() === 'text') {
+                    chatModel.messages.push(message);
+                    chatModel.scrollToBottom();
+                    return;
+                }
+
+                if (message.type() === 'system') {
+                    commands(message.data().cmd, message.data().args, message);
+                }
             });
         },
         disconnect: function () {
@@ -76,9 +92,12 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
                 }
             }, pubnubModel.historyHandler(function(message) {
                 parseMessage(message, function (message) {
-                    var messages = chatModel.messages();
-                    messages.push(message);
-                    chatModel.messages.valueHasMutated();
+                    if (message.type() !== 'text') {
+                        return;
+                    }
+
+                    chatModel.messages.push(message);
+                    chatModel.scrollToBottom();       
                 });
             }));
 
@@ -101,6 +120,8 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
     var pubnubModel = pubnub(pubnubParams, pubnubDispatcher);
 
     chatModel = chatModel(pubnubModel, userModel);
+
+    commands = commands(chatModel, userModel);
 
     hashModel.userId.subscribe(function (newId) {
         userModel.id(newId.toString());
@@ -175,7 +196,7 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
         };
 
         var heightControl = function (currentHeight) {
-            var heightOffset = $('.messages').outerHeight(true) - $('.messages').height();
+            var heightOffset = $('.messagebox').outerHeight(true) - $('.messagebox').height() + $('.typing').outerHeight();
             var rows = $('.row');
 
             var complete = function(height) {

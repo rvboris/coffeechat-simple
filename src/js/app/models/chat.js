@@ -2,6 +2,7 @@ define(['libs/jquery', 'libs/knockout', 'app/utils', 'libs/jstorage', 'libs/hash
 
 function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinycon, Buzz, MessageModel) {
     var unreadCounter = 0;
+    var lastTypeCheck = 0;
 
     var incomingMessageSound = new Buzz.sound('media/incoming-message', {
         formats: ['ogg', 'mp3']
@@ -14,6 +15,7 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
         this.isActive = ko.observable(true);
         this.messages = ko.observableArray();
         this.lastMessage = ko.observable();
+        this.lastSystemMessage = ko.observable();
         this.online = ko.observable(0);
         this.canSend = ko.observable(false);
 
@@ -62,8 +64,6 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
             Tinycon.setOptions({
                 fallback: true
             });
-
-            this.scrollToBottom();
         }, this));
 
         this.style.subscribe($.proxy(function () {
@@ -116,13 +116,9 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
 
             message.time(moment().unix());
             message.name(userModel.name());
-            message.text(value);
+            message.text(value + '|text');
 
-            delete message.repeatName;
-            delete message.formattedTime;
-            delete message.formattedName;
-
-            message = ko.toJS(message);
+            message = utils.prepareMessage(ko.toJS(message));
 
             this.lastMessage(message);
 
@@ -137,6 +133,35 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
                     }
                 }, this)
             });
+        }, this);
+
+        this.typingUsers = ko.observableArray();
+
+        this.typing = $.proxy(function(MasterModel, event) {
+            if (utils.isTextKeyCode(event.keyCode)) {
+                if (new Date().getTime() - lastTypeCheck > 1000) {
+                    lastTypeCheck = new Date().getTime();
+
+                    var message = new MessageModel();
+
+                    message.time(moment().unix());
+                    message.name(userModel.name());
+                    message.text(JSON.stringify({
+                        cmd: 'typing',
+                        args: null
+                    }) + '|system');
+
+                    message = utils.prepareMessage(ko.toJS(message));
+                    this.lastSystemMessage = message;
+
+                    pubnubModel.pubnub.publish({
+                        channel: pubnubModel.channel(),
+                        message: JSON.stringify(message)
+                    });
+                }
+            }
+
+            return true;
         }, this);
     };
 

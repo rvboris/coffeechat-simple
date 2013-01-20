@@ -51,19 +51,44 @@
       &.text
         margin 0 5px
 
-  .messages
-    height 500px
-    overflow-y auto
+  .messagebox
     box-sizing border-box
     margin-top 10px
 
-    .message
-      margin 4px 0
-    .text
-      word-wrap: break-word
-    .time, .name
-      margin-right 10px
-      display inline-block
+    .messages
+      overflow-y auto
+      .message
+        margin 4px 0
+      .text
+        word-wrap: break-word
+      .time, .name
+        margin-right 10px
+        display inline-block
+
+    .typing
+      height 20px
+      line-height 20px
+      background #e5e5e5
+      padding 2px 6px
+      -webkit-border-radius 3px
+      -moz-border-radius 3px
+      border-radius 3px
+
+      > span
+        float left
+        line-height 20px
+        font-weight normal
+
+      span
+        margin-right 5px
+        font-family Helvetica Neue, Helvetica, Arial, sans-serif
+
+      ul
+        list-style none
+        margin 0
+
+      li
+        float left
 
   .message-input
     position relative

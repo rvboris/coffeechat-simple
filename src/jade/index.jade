@@ -55,17 +55,24 @@ body
           i(data-bind='css: { on: userModel.paramAudio(), off: !userModel.paramAudio(), "btn-info": userModel.paramAudio(), "btn-inverse": !userModel.paramAudio() }').btn
           i(data-bind='text: userModel.paramAudioText()').text
     .row
-      pre.span12(data-bind='foreach: chatModel.messages(), style: chatModel.style()').messages
-        .message
-          span(data-bind='text: formattedTime()').time
-          span(data-bind='text: formattedName()').name
-          span(data-bind='html: text()').text
+      pre.span12.messagebox
+        div(data-bind='foreach: chatModel.messages(), afterRender: chatModel.scrollToBottom, style: chatModel.style()').messages
+          .message
+            span(data-bind='text: formattedTime()').time
+            span(data-bind='text: formattedName()').name
+            span(data-bind='html: getText()').text
+
+        .typing(data-bind='style: { visibility: chatModel.typingUsers().length > 0 ? "visible" : "hidden" }')
+          span Вводят сообщение:
+          ul(data-bind='foreach: chatModel.typingUsers()')
+            li
+              span.label.label-info(data-bind='text: name()')
     .row
       .span12.message-input
         form(data-bind='submit: chatModel.send')
           .input-append
             .input-wrapper.clearfix
-              input(type='text', name='text', placeholder='сообщение', maxlength='1500', autofocus='true', data-bind='enable: chatModel.canSend()').input-block-level
+              input(type='text', name='text', placeholder='сообщение', maxlength='1500', autofocus='true', data-bind='enable: chatModel.canSend(), event: { keypress: chatModel.typing }').input-block-level
             button(type='submit', data-bind='enable: chatModel.canSend()').btn.btn-primary
               i.icon-comment.icon-white
               |  Отправить

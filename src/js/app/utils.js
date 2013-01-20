@@ -90,6 +90,19 @@ define([], function () {
             }
 
             return true;
+        },
+        isTextKeyCode: function(keyCode) {
+            return ((keyCode >= 48 && keyCode <= 90) || (keyCode >= 96 && keyCode <= 111) || (keyCode >= 186 && keyCode <= 222));
+        },
+        prepareMessage: function(message) {
+            delete message.type;
+            delete message.data;
+            delete message.repeatName;
+            delete message.getText;
+            delete message.formattedTime;
+            delete message.formattedName;
+
+            return message;
         }
     };
 });
