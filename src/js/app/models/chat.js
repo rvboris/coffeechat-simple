@@ -152,7 +152,7 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
                     }) + '|system');
 
                     message = utils.prepareMessage(ko.toJS(message));
-                    this.lastSystemMessage = message;
+                    this.lastSystemMessage(message);
 
                     pubnubModel.pubnub.publish({
                         channel: pubnubModel.channel(),
