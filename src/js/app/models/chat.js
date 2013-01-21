@@ -38,12 +38,15 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
         }, this));
 
         this.isActive.subscribe($.proxy(function(active) {
+
             if (!active) {
+                console.log(1);
                 exitTimeout = setTimeout($.proxy(function() {
                     this.exit();
                 }, this), 900000); // 15 min
             } else {
-                Tinycon.reset();
+                console.log(2);
+                Tinycon.setBubble(0);
                 clearTimeout(exitTimeout);
             }
         }, this));
