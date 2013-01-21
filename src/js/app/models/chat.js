@@ -138,29 +138,27 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
         this.typingUsers = ko.observableArray();
 
         this.typing = $.proxy(function(MasterModel, event) {
-            if (utils.isTextKeyCode(event.keyCode)) {
-                if (new Date().getTime() - lastTypeCheck > 1000) {
-                    lastTypeCheck = new Date().getTime();
+            if (new Date().getTime() - lastTypeCheck > 1000) {
+                lastTypeCheck = new Date().getTime();
 
-                    var message = new MessageModel();
+                var message = new MessageModel();
 
-                    message.time(moment().unix());
-                    message.name(userModel.name());
-                    message.text(JSON.stringify({
-                        cmd: 'typing',
-                        args: null
-                    }) + '|system');
+                message.time(moment().unix());
+                message.name(userModel.name());
+                message.text(JSON.stringify({
+                    cmd: 'typing',
+                    args: null
+                }) + '|system');
 
-                    message = utils.prepareMessage(ko.toJS(message));
-                    this.lastSystemMessage(message);
+                message = utils.prepareMessage(ko.toJS(message));
+                this.lastSystemMessage(message);
 
-                    pubnubModel.pubnub.publish({
-                        channel: pubnubModel.channel(),
-                        message: JSON.stringify(message)
-                    });
-                }
+                pubnubModel.pubnub.publish({
+                    channel: pubnubModel.channel(),
+                    message: JSON.stringify(message)
+                });
             }
-
+            
             return true;
         }, this);
     };
