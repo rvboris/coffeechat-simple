@@ -116,7 +116,10 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $, $spin, ko, hash
                     userModel.name(defaultName);
 
                     bootbox.prompt('Как вас зовут?', 'Позднее', 'Продолжить', function(name) {
-                        console.log(name);
+                        if (name === null) {
+                            return;
+                        }
+                        
                         if (utils.isEmpty(name) || !utils.isLength(name, 2, 20) || !utils.isAlphanumeric(name)) {
                             $notify('.notifications').notify({
                                 type: 'warning',
