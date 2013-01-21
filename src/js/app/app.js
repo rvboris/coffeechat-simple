@@ -1,6 +1,6 @@
-define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
+define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
 
-function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, moment, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
+function (Templates, modernizr, $bootstrap, $notify, bootbox, $, $spin, ko, hasher, jstorage, moment, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
     'use strict';
 
     $('#loader').spin();
@@ -68,7 +68,7 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
                     chatModel.typingUsers.remove(function(typingUser) {
                         return typingUser.name() === message.name();
                     });
-                    
+
                     return;
                 }
 
@@ -108,9 +108,25 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
             pubnubModel.pubnub.here_now({
                 channel: pubnubModel.channel(),
                 callback: function(event) {
-                    if (userModel.name() === userModel.defaultName) {
-                        userModel.name(userModel.defaultName + ' ' + (event.occupancy === 0 ? 1 : event.occupancy + 1).toString());
+                    if (userModel.name() !== userModel.defaultName) {
+                        return;
                     }
+
+                    var defaultName = userModel.defaultName + ' ' + (event.occupancy === 0 ? 1 : event.occupancy + 1).toString();
+                    userModel.name(defaultName);
+
+                    bootbox.prompt('Как вас зовут?', 'Позднее', 'Продолжить', function(name) {
+                        console.log(name);
+                        if (utils.isEmpty(name) || !utils.isLength(name, 2, 20) || !utils.isAlphanumeric(name)) {
+                            $notify('.notifications').notify({
+                                type: 'warning',
+                                fadeOut: { enabled: true, delay: 3000 },
+                                message: { text: 'Имя введено не верно' }
+                            }).show();
+                        } else {
+                            userModel.name(name);
+                        }
+                    }, defaultName);
                 }
             });
 
