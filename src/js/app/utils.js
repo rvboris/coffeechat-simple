@@ -100,6 +100,15 @@ define([], function () {
             delete message.formattedName;
 
             return message;
+        },
+        findTypingUser: function(list, name) {
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].name() === name) {
+                    return i;
+                }
+            }
+
+            return -1;
         }
     };
 });

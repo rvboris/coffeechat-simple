@@ -1,21 +1,11 @@
-define(['libs/jquery', 'libs/moment', 'models/typing-user'], function($, moment, TypingUser) {
+define(['libs/jquery', 'app/utils', 'libs/moment', 'models/typing-user'], function($, utils, moment, TypingUser) {
 	return function(chatModel, userModel) {
 
 		var typingInterval;
 
 		var commands = {
 			typing: function(name, time) {
-				var findUser = function(name) {
-					for (var i = 0; i < chatModel.typingUsers().length; i++) {
-						if (chatModel.typingUsers()[i].name() === name) {
-							return i;
-						}
-					}
-
-					return -1;
-				};
-
-				var foundUser = findUser(name);
+				var foundUser = utils.findTypingUser(chatModel.typingUsers(), name);
 
 				if (foundUser < 0) {
 					chatModel.typingUsers.push(new TypingUser().name(name).time(time));

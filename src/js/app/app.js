@@ -65,6 +65,10 @@ function (Templates, modernizr, $bootstrap, $, $spin, ko, hasher, jstorage, mome
                 if (message.type() === 'text') {
                     chatModel.messages.push(message);
                     chatModel.scrollToBottom();
+                    chatModel.typingUsers.remove(function(typingUser) {
+                        return typingUser.name() === message.name();
+                    });
+                    
                     return;
                 }
 

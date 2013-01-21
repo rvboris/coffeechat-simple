@@ -53,7 +53,7 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
             if (!this.isActive()) {
                 unreadCounter++;
 
-                if (userModel.paramsAudio()) {
+                if (userModel.paramAudio()) {
                     incomingMessageSound.play();
                 }
             } else {
@@ -158,7 +158,7 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
                     message: JSON.stringify(message)
                 });
             }
-            
+
             return true;
         }, this);
     };
