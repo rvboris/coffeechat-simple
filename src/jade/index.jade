@@ -39,7 +39,7 @@ body
     .row.controls
       .span3.username
         a(href='#', id='username', data-bind='text: userModel.name()') Гость
-      .span3.offset6.btn-group.main-buttons
+      .span4.offset5.btn-group.main-buttons
         button(type='button', data-bind='click: chatModel.invite', data-toggle='button').btn.btn-success.invite
           i.icon-user.icon-white
           |  Пригласить
@@ -49,7 +49,7 @@ body
     .row
       .span3.online
         span(data-bind='text: chatModel.usersOnline(), css: { muted: chatModel.online() === 0, "text-info": chatModel.online() === 1, "text-success": chatModel.online() > 1 }') нет пользователей
-      .span4.offset5.audio
+      .span5.offset4.audio
         span Звуковые уведомления
         button(type='button', data-bind='click: userModel.toogleAudio').btn.active
           i(data-bind='css: { on: userModel.paramAudio(), off: !userModel.paramAudio(), "btn-info": userModel.paramAudio(), "btn-inverse": !userModel.paramAudio() }').btn

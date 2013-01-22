@@ -36,6 +36,28 @@ define(['libs/knockout', 'libs/jquery', 'app/utils', 'libs/moment', 'models/mess
 
 				if (userInList >= 0) {
 					chatModel.users()[userInList].name = name;
+				} else {
+					userInList = chatModel.users.push({
+						name: name,
+						uuid: uuid
+					});
+				}
+
+				chatModel.messages.push(new MessageModel().type('text').data('вошел в чат').name(name).time(time));
+			},
+			replaceName: function(name, time, uuid) {
+				var userInList = utils.findUserByUuid(chatModel.users(), uuid);
+
+				if (userInList >= 0) {
+					if (chatModel.users()[userInList].name !== name) {
+						chatModel.messages.push(new MessageModel().type('text').data('изменил имя').name(name).time(time));
+						chatModel.users()[userInList].name = name;
+					}
+				} else {
+					userInList = chatModel.users.push({
+						name: name,
+						uuid: uuid
+					});
 					chatModel.messages.push(new MessageModel().type('text').data('вошел в чат').name(name).time(time));
 				}
 			},

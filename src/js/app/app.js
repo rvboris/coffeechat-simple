@@ -218,6 +218,27 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
                 paramAudio: userModel.paramAudio()
             }
         });
+
+        if (!pubnubModel.pubnub) {
+            return;
+        }
+
+        var message = new MessageModel();
+
+        message.time(moment().unix());
+        message.name(userModel.name());
+        message.text(JSON.stringify({
+            cmd: 'replaceName',
+            args: [ userModel.id() ]
+        }) + '|system');
+
+        message = utils.prepareMessage(ko.toJS(message));
+        chatModel.lastSystemMessage(message);
+
+        pubnubModel.pubnub.publish({
+            channel: pubnubModel.channel(),
+            message: JSON.stringify(message)
+        });
     });
 
     userModel.paramAudio.subscribe(function (audio) {
