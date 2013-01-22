@@ -4,12 +4,14 @@ define(['libs/jquery', 'libs/knockout', 'libs/pubnub', 'libs/gibberish-aes'], fu
             this.pubnub = null;
 
             this.channel = ko.observable();
+            this.joined = ko.observable(false);
 
-            this.init = $.proxy(function () {
+            this.init = $.proxy(function (userModel) {
                 this.pubnub = pubnub.init({
                     publish_key: params.pubkey,
                     subscribe_key: params.subkey,
-                    ssl: params.ssl
+                    ssl: params.ssl,
+                    uuid: userModel.id()
                 });
 
                 this.pubnub._publish = this.pubnub.publish;

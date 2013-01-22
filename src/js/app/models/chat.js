@@ -17,6 +17,7 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
         this.lastMessage = ko.observable();
         this.lastSystemMessage = ko.observable();
         this.online = ko.observable(0);
+        this.users = ko.observableArray();
         this.canSend = ko.observable(false);
 
         this.style = ko.observable({
@@ -38,14 +39,11 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
         }, this));
 
         this.isActive.subscribe($.proxy(function(active) {
-
             if (!active) {
-                console.log(1);
                 exitTimeout = setTimeout($.proxy(function() {
                     this.exit();
                 }, this), 900000); // 15 min
             } else {
-                console.log(2);
                 Tinycon.setBubble(0);
                 clearTimeout(exitTimeout);
             }
@@ -61,11 +59,8 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
             } else {
                 unreadCounter = 0;
             }
-
+            
             Tinycon.setBubble(unreadCounter);
-            Tinycon.setOptions({
-                fallback: true
-            });
         }, this));
 
         this.style.subscribe($.proxy(function () {

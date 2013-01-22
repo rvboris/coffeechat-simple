@@ -20,12 +20,11 @@ module.exports = function (grunt) {
     cssMinConfig.main = {};
     cssMinConfig.main.files = {};
     cssMinConfig.main.files['public/css/' + cssFileName] = 'public/css/' + cssFileName;
-
+    
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-stylus');
-    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-jade');
     grunt.loadNpmTasks('grunt-contrib-handlebars');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
@@ -42,7 +41,6 @@ module.exports = function (grunt) {
                 'public/js/*.js',
                 'public/*.html',
                 'src/stylus/compiled/*.css',
-                'src/less/compiled/*.css',
                 'src/js/compiled/*.js'
             ]
         },
@@ -71,8 +69,8 @@ module.exports = function (grunt) {
 
         watch: {
             scripts: {
-                files: ['src/stylus/*.styl', 'src/less/**/*.less', 'src/jade/*.jade'],
-                tasks: ['stylus', 'less', 'concat:styles', 'jade:development', 'mincss'],
+                files: ['src/stylus/*.styl', 'src/css/*.css', 'src/jade/*.jade'],
+                tasks: ['stylus', 'concat:styles', 'jade:development', 'mincss'],
             }
         },
 
@@ -83,18 +81,6 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'src/stylus/compiled/style.css': 'src/stylus/*.styl'
-                }
-            }
-        },
-
-        less: {
-            main: {
-                options: {
-                    yuicompress: true
-                },
-                files: {
-                    'src/less/compiled/bootstrap.css': 'src/less/bootstrap/bootstrap.less',
-                    'src/less/compiled/responsive.css': 'src/less/bootstrap/responsive.less',
                 }
             }
         },
@@ -169,7 +155,7 @@ module.exports = function (grunt) {
         concat: {
             styles: {
                 src: [
-                    'src/less/compiled/*.css',
+                    'src/css/*.css',
                     'src/stylus/compiled/*.css'
                 ],
                 dest: 'public/css/' + cssFileName
@@ -184,7 +170,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'less', 'concat:styles', 'handlebars', 'wrap']);
+    grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'concat:styles', 'handlebars', 'wrap']);
     grunt.registerTask('development', ['main', 'bump', 'jade:development', 'mincss']);
     grunt.registerTask('production', ['main', 'jade:production', 'requirejs', 'concat:scripts', 'uglify', 'mincss']);
 };

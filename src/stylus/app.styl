@@ -2,8 +2,7 @@
   margin 50px auto 0 auto
 
 #app
-  .header h1, .header span
-    font-smooth always
+  .header h3, .header span
     float left
   .header span
     margin 10px 0 0 10px
@@ -15,30 +14,19 @@
       cursor text
 
   .controls
-    margin-bottom 10px  
+    margin-bottom 10px
 
-  .username
-    form, input
-      margin 0
-      width inherit
-    h2
-      cursor pointer
+    #username
+      padding 3px 0
       font-size 14px
       line-height 30px
       margin 0
       font-weight lighter
       border-bottom 1px dashed #CCC
-      &.edit
-        border-bottom none
-        line-height 30px
-      &.error
-        border-bottom 1px solid red !important
+      color #000
 
   .online
     line-height 30px
-
-  .audio
-    min-width 270px
 
   .audio > button
     padding 2px

@@ -101,14 +101,36 @@ define([], function () {
 
             return message;
         },
-        findTypingUser: function(list, name) {
+        findUserByName: function(list, name) {
             for (var i = 0; i < list.length; i++) {
-                if (list[i].name() === name) {
+                if (list[i].name === name) {
                     return i;
                 }
             }
 
             return -1;
+        },
+        findUserByUuid: function(list, uuid) {
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].uuid === uuid) {
+                    return i;
+                }
+            }
+
+            return -1;
+        },
+        validateUserName: function(utils, name) {
+            if (utils.isEmpty(name)) {
+                return 'Имя не заполнено';
+            }
+
+            if (!utils.isLength(name, 2, 20)) {
+                return 'Допустимая длинна имени от 2 до 20 символов';
+            }
+
+            if (!utils.isAlphanumeric(name)) {
+                return 'Допускаются только буквы и цифры';
+            }
         }
     };
 });

@@ -34,12 +34,12 @@ body
   #app.container(data-bind='visible: chatModel.isReady()', style='display: none')
     .row.header
       .span12
-        h1 Coffeechat
+        h3 Coffeechat
         span.label.label-info beta
     .row.controls
-      .span9.username
-        h2(data-placement='bottom', data-original-title='Нажмите чтобы изменить имя', data-bind='css: { edit: userModel.nameEditable(), error: userModel.nameEditableError() }, click: userModel.toogleNameEditable, jeditable: userModel.name').input-xlarge Гость
-      .span3.btn-group.main-buttons
+      .span3.username
+        a(href='#', id='username', data-bind='text: userModel.name()') Гость
+      .span3.offset6.btn-group.main-buttons
         button(type='button', data-bind='click: chatModel.invite', data-toggle='button').btn.btn-success.invite
           i.icon-user.icon-white
           |  Пригласить
@@ -47,10 +47,10 @@ body
           i.icon-off.icon-white
           |  Выйти
     .row
-      .span9.online
+      .span3.online
         span(data-bind='text: chatModel.usersOnline(), css: { muted: chatModel.online() === 0, "text-info": chatModel.online() === 1, "text-success": chatModel.online() > 1 }') нет пользователей
-      .span3.audio
-        | Звуковые уведомления
+      .span4.offset5.audio
+        span Звуковые уведомления
         button(type='button', data-bind='click: userModel.toogleAudio').btn.active
           i(data-bind='css: { on: userModel.paramAudio(), off: !userModel.paramAudio(), "btn-info": userModel.paramAudio(), "btn-inverse": !userModel.paramAudio() }').btn
           i(data-bind='text: userModel.paramAudioText()').text
@@ -66,7 +66,7 @@ body
           span Вводят сообщение:
           ul(data-bind='foreach: chatModel.typingUsers()')
             li
-              span.label.label-info(data-bind='text: name()')
+              span.label.label-info(data-bind='text: name')
     .row
       .span12.message-input
         form(data-bind='submit: chatModel.send')

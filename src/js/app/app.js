@@ -1,6 +1,6 @@
-define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
+define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/bootstrap.editable', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
 
-function (Templates, modernizr, $bootstrap, $notify, bootbox, $, $spin, ko, hasher, jstorage, moment, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
+function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spin, ko, hasher, jstorage, moment, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
     'use strict';
 
     $('#loader').spin();
@@ -66,7 +66,7 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $, $spin, ko, hash
                     chatModel.messages.push(message);
                     chatModel.scrollToBottom();
                     chatModel.typingUsers.remove(function(typingUser) {
-                        return typingUser.name() === message.name();
+                        return typingUser.name === message.name();
                     });
 
                     return;
@@ -79,6 +79,7 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $, $spin, ko, hash
         },
         disconnect: function () {
             chatModel.isReady(false);
+            pubnubModel.joined(false);
         },
         reconnect: function () {
             if (!chatModel.isReady()) {
@@ -108,23 +109,33 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $, $spin, ko, hash
             pubnubModel.pubnub.here_now({
                 channel: pubnubModel.channel(),
                 callback: function(event) {
+                    $.each(event.uuids, function(uuid) {
+                        chatModel.users.push({
+                            name: null,
+                            uuid: uuid
+                        });
+                    });
+
                     if (userModel.name() !== userModel.defaultName) {
                         return;
                     }
 
-                    var defaultName = userModel.defaultName + ' ' + (event.occupancy === 0 ? 1 : event.occupancy + 1).toString();
+                    var defaultName = userModel.defaultName + ' ' + ((event.occupancy === 0) ? 1 : (pubnubModel.joined()) ? event.occupancy : event.occupancy + 1).toString();
+
                     userModel.name(defaultName);
 
                     bootbox.prompt('Как вас зовут?', 'Позднее', 'Продолжить', function(name) {
                         if (name === null) {
                             return;
                         }
+
+                        var nameValidation = utils.validateUserName(utils, name);
                         
-                        if (utils.isEmpty(name) || !utils.isLength(name, 2, 20) || !utils.isAlphanumeric(name)) {
+                        if (nameValidation) {
                             $notify('.notifications').notify({
                                 type: 'warning',
                                 fadeOut: { enabled: true, delay: 3000 },
-                                message: { text: 'Имя введено не верно' }
+                                message: { text: nameValidation }
                             }).show();
                         } else {
                             userModel.name(name);
@@ -136,6 +147,52 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $, $spin, ko, hash
             chatModel.isReady(true);
         },
         presence: function (event) {
+            var userInList = utils.findUserByUuid(chatModel.users(), event.uuid);
+
+            if (event.action === 'join') {
+                if (userInList < 0) {
+                    chatModel.users.push({
+                        name: null,
+                        uuid: event.uuid
+                    });
+
+                    if (event.uuid !== userModel.id()) {
+                        var message = new MessageModel();
+
+                        message.time(moment().unix());
+                        message.name(userModel.name());
+                        message.text(JSON.stringify({
+                            cmd: 'getName',
+                            args: [ event.uuid ]
+                        }) + '|system');
+
+                        message = utils.prepareMessage(ko.toJS(message));
+                        chatModel.lastSystemMessage(message);
+
+                        pubnubModel.pubnub.publish({
+                            channel: pubnubModel.channel(),
+                            message: JSON.stringify(message)
+                        });
+                    }
+                } else if (event.uuid === userModel.id()) {
+                    chatModel.users()[userInList].name = userModel.name();
+                }
+
+                if (event.uuid === userModel.id()) {
+                    pubnubModel.joined(true);
+                }
+            } else if (event.action === 'leave') {
+                if (userInList >= 0) {
+                    if (chatModel.users()[userInList].name !== null) {
+                        chatModel.messages.push(new MessageModel().type('text').data('вышел из чата').name(chatModel.users()[userInList].name).time(moment()));
+                    }
+
+                    chatModel.users.remove(function(user) {
+                        return user.uuid === event.uuid;
+                    });
+                }
+            }
+
             chatModel.usersOnline(event.occupancy);
         }
     };
@@ -143,8 +200,7 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $, $spin, ko, hash
     var pubnubModel = pubnub(pubnubParams, pubnubDispatcher);
 
     chatModel = chatModel(pubnubModel, userModel);
-
-    commands = commands(chatModel, userModel);
+    commands = commands(chatModel, userModel, pubnubModel);
 
     hashModel.userId.subscribe(function (newId) {
         userModel.id(newId.toString());
@@ -154,62 +210,67 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $, $spin, ko, hash
         pubnubModel.channel(newChannel.toString());
     });
 
+    userModel.name.subscribe(function (name) {
+        jstorage.set(hashModel.channelId(), {
+            user: {
+                id: userModel.id(),
+                name: userModel.name(),
+                paramAudio: userModel.paramAudio()
+            }
+        });
+    });
+
     userModel.paramAudio.subscribe(function (audio) {
         userModel.paramAudioText(audio ? 'выкл' : 'вкл');
-        jstorage.set('user', {
-            id: userModel.id(),
-            paramAudio: userModel.paramAudio()
+        jstorage.set(hashModel.channelId(), {
+            user: {
+                id: userModel.id(),
+                name: userModel.name(),
+                paramAudio: userModel.paramAudio()
+            }
         });
     });
 
     hasher.prependHash = '';
 
     hasher.initialized.add(function (currentHash) {
-        var savedUser = jstorage.get('user');
+        var savedChannel;
 
-        if (savedUser) {
-            try {
-                savedUser = JSON.parse(savedUser);
-            } catch (e) {
-                savedUser = null;
-                jstorage.flush();
-            }
-        }
-        
         if (currentHash !== '') {
             hashModel.fullHash(currentHash);
+
+            savedChannel = jstorage.get(hashModel.channelId());
+
             if (userModel.id() === '') {
-                if (savedUser) {
-                    hashModel.userId(savedUser.id);
+                if (savedChannel && savedChannel.user) {
+                    hashModel.userId(savedChannel.user.id);
                 } else {
                     hashModel.userId(utils.randomString());
                 }
             }
         } else {
-            if (savedUser) {
-                hashModel.userId(savedUser.id);
-                hashModel.channelId(utils.randomString());
-            } else {
-                hashModel.userId(utils.randomString());
-                hashModel.channelId(utils.randomString());
-            }
+            hashModel.userId(utils.randomString());
+            hashModel.channelId(utils.randomString());
         }
 
-        if (savedUser) {
-            userModel.id(savedUser.id);
-            userModel.paramAudio(savedUser.paramAudio);
+        if (savedChannel && savedChannel.user) {
+            userModel.name(savedChannel.user.name);
+            userModel.paramAudio(savedChannel.user.paramAudio);
         }
     });
 
-    hasher.init();
+    hasher.init(userModel);
     hasher.replaceHash(hashModel.fullHash());
 
-    jstorage.set('user', {
-        id: userModel.id(),
-        paramAudio: userModel.paramAudio()
+    jstorage.set(hashModel.channelId(), {
+        user: {
+            id: userModel.id(),
+            name: userModel.name(),
+            paramAudio: userModel.paramAudio()
+        }
     });
 
-    pubnubModel.init();
+    pubnubModel.init(userModel);
     pubnubModel.subscribe();
 
     $(document).ready(function () {
@@ -264,6 +325,19 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $, $spin, ko, hash
             if (isReady) {
                 heightControl($(window).height());
             }
+        });
+
+        $editable('#username').editable({
+            type: 'text',
+            title: 'ваше имя',
+            placement: 'right',
+            send: 'never',
+            value: userModel.name(),
+            validate: function(value) {
+                return utils.validateUserName(utils, value);
+            }
+        }).on('save', function(e, params) {
+            userModel.name(params.newValue);
         });
 
         $bootstrap('.main-buttons .invite').popover({
