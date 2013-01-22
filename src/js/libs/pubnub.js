@@ -1,4 +1,37 @@
 define([], function () {
+
+    /* ---------------------------------------------------------------------------
+WAIT! - This file depends on instructions from the PUBNUB Cloud.
+http://www.pubnub.com/account-javascript-api-include
+--------------------------------------------------------------------------- */
+
+    /* ---------------------------------------------------------------------------
+PubNub Real-time Cloud-Hosted Push API and Push Notification Client Frameworks
+Copyright (c) 2011 PubNub Inc.
+http://www.pubnub.com/
+http://www.pubnub.com/terms
+--------------------------------------------------------------------------- */
+
+    /* ---------------------------------------------------------------------------
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+--------------------------------------------------------------------------- */
+
     /* =-====================================================================-= */
     /* =-====================================================================-= */
     /* =-=========================     UTIL     =============================-= */
@@ -11,7 +44,7 @@ define([], function () {
          * UTIL LOCALS
          */
         var NOW = 1,
-            SWF = 'https://dh15atwfs066y.cloudfront.net/pubnub.swf',
+            SWF = 'https://pubnub.a.ssl.fastly.net/pubnub.swf',
             REPL = /{([\w\-]+)}/g,
             ASYNC = 'async',
             URLBIT = '/',
@@ -27,7 +60,8 @@ define([], function () {
          * CONSOLE COMPATIBILITY
          */
         window.console || (window.console = window.console || {});
-        console.error || (console.error = ((window.opera || {}).postError || function () {}));
+        console.log || (
+        console.log = console.error = ((window.opera || {}).postError || function () {}));
 
         /**
          * UTILITIES
@@ -486,12 +520,13 @@ define([], function () {
                     SUB_CHANNEL = 0,
                     SUB_RECEIVER = 0,
                     SUB_RESTORE = 0,
+                    SUB_WINDOWING = 10,
                     SUB_BUFF_WAIT = 0,
                     TIMETOKEN = 0,
                     PUBLISH_KEY = setup['publish_key'] || '',
                     SUBSCRIBE_KEY = setup['subscribe_key'] || '',
                     SSL = setup['ssl'] ? 's' : '',
-                    UUID = setup['uuid'] || db.get(SUBSCRIBE_KEY + 'uuid') || '',
+                    UUID = setup['uuid'] || db['get'](SUBSCRIBE_KEY + 'uuid') || '',
                     ORIGIN = 'http' + SSL + '://' + (setup['origin'] || 'pubsub.pubnub.com'),
                     LEAVE = function () {}, CONNECT = function () {}, SELF = {
                         /*
@@ -501,7 +536,7 @@ define([], function () {
                 callback : function(history) { }
             });
         */
-                            'history': function (args, callback) {
+                        'history': function (args, callback) {
                             var callback = args['callback'] || callback,
                                 count = args['count'] || args['limit'] || 100,
                                 reverse = args['reverse'] || "false",
@@ -515,11 +550,12 @@ define([], function () {
                             if (!callback) return error('Missing Callback');
                             if (!SUBSCRIBE_KEY) return error('Missing Subscribe Key');
 
-                            params["count"] = count;
-                            params["reverse"] = reverse;
+                            params['stringtoken'] = 'true';
+                            params['count'] = count;
+                            params['reverse'] = reverse;
 
-                            if (start) params["start"] = start;
-                            if (end) params["end"] = end;
+                            if (start) params['start'] = start;
+                            if (end) params['end'] = end;
 
                             // Send Message
                             xdr({
@@ -536,15 +572,65 @@ define([], function () {
                         },
 
                         /*
+            PUBNUB.replay({
+                source      : 'my_channel',
+                destination : 'new_channel'
+            });
+        */
+                        'replay': function (args) {
+                            var callback = callback || args['callback'] || function () {}, source = args['source'],
+                                destination = args['destination'],
+                                stop = args['stop'],
+                                start = args['start'],
+                                end = args['end'],
+                                reverse = args['reverse'],
+                                limit = args['limit'],
+                                jsonp = jsonp_cb(),
+                                data = {}, url;
+
+                            // Check User Input
+                            if (!source) return error('Missing Source Channel');
+                            if (!destination) return error('Missing Destination Channel');
+                            if (!PUBLISH_KEY) return error('Missing Publish Key');
+                            if (!SUBSCRIBE_KEY) return error('Missing Subscribe Key');
+
+                            // Setup URL Params
+                            if (jsonp != '0') data['callback'] = jsonp;
+                            if (stop) data['stop'] = 'all';
+                            if (reverse) data['reverse'] = 'true';
+                            if (start) data['start'] = start;
+                            if (end) data['end'] = end;
+                            if (limit) data['count'] = limit;
+
+                            // Compose URL Parts
+                            url = [
+                            ORIGIN, 'v1', 'replay',
+                            PUBLISH_KEY, SUBSCRIBE_KEY,
+                            source, destination];
+
+                            // Start (or Stop) Replay!
+                            xdr({
+                                callback: jsonp,
+                                success: function (response) {
+                                    callback(response)
+                                },
+                                fail: function () {
+                                    callback([0, 'Disconnected'])
+                                },
+                                url: url,
+                                data: data
+                            });
+                        },
+
+                        /*
             PUBNUB.time(function(time){ });
         */
-'time': function (callback) {
-                            var jsonp = jsonp_cb(),
-                                origin = nextorigin(ORIGIN);
+                        'time': function (callback) {
+                            var jsonp = jsonp_cb();
 
                             xdr({
                                 callback: jsonp,
-                                url: [origin, 'time', jsonp],
+                                url: [ORIGIN, 'time', jsonp],
                                 success: function (response) {
                                     callback(response[0])
                                 },
@@ -557,7 +643,7 @@ define([], function () {
                         /*
             PUBNUB.uuid(function(uuid) { });
         */
-'uuid': function (callback) {
+                        'uuid': function (callback) {
                             var u = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
 
                             function (c) {
@@ -575,7 +661,7 @@ define([], function () {
                 message : 'hello!'
             });
         */
-'publish': function (args, callback) {
+                        'publish': function (args, callback) {
                             var callback = callback || args['callback'] || function () {}, message = args['message'],
                                 channel = args['channel'],
                                 jsonp = jsonp_cb(),
@@ -615,8 +701,11 @@ define([], function () {
                         /*
             PUBNUB.unsubscribe({ channel : 'my_chat' });
         */
-'unsubscribe': function (args) {
+                        'unsubscribe': function (args) {
                             var channel = args['channel'];
+
+                            TIMETOKEN = 0;
+                            SUB_RESTORE = 1;
 
                             // Prepare Channel(s)
                             channel = map((
@@ -627,7 +716,7 @@ define([], function () {
                             // Iterate over Channels
                             each(channel.split(','), function (channel) {
                                 if (READY) LEAVE(channel, 0);
-                                CHANNELS[channel] = {};
+                                CHANNELS[channel] = 0;
                             });
 
                             // ReOpen Connection if Any Channels Left
@@ -640,11 +729,14 @@ define([], function () {
                 callback : function(message) { }
             });
         */
-'subscribe': function (args, callback) {
+                        'subscribe': function (args, callback) {
                             var channel = args['channel'],
                                 callback = callback || args['callback'],
                                 callback = callback || args['message'],
-                                err = args['error'] || function () {}, connect = args['connect'] || function () {}, reconnect = args['reconnect'] || function () {}, disconnect = args['disconnect'] || function () {}, presence = args['presence'] || 0,
+                                connect = args['connect'] || function () {}, reconnect = args['reconnect'] || function () {}, disconnect = args['disconnect'] || function () {}, presence = args['presence'] || 0,
+                                noheresync = args['noheresync'] || 0,
+                                sub_timeout = args['timeout'] || SUB_TIMEOUT,
+                                windowing = args['windowing'] || SUB_WINDOWING,
                                 restore = args['restore'],
                                 origin = nextorigin(ORIGIN);
 
@@ -670,7 +762,6 @@ define([], function () {
                                     subscribed: 1,
                                     callback: SUB_CALLBACK = callback,
                                     connect: connect,
-                                    error: err,
                                     disconnect: disconnect,
                                     reconnect: reconnect
                                 };
@@ -679,18 +770,19 @@ define([], function () {
                                 if (!presence) return;
 
                                 // Subscribe Presence Channel
-                                SELF.subscribe({
-                                    channel: channel + PRESENCE_SUFFIX,
-                                    callback: presence
+                                SELF['subscribe']({
+                                    'channel': channel + PRESENCE_SUFFIX,
+                                    'callback': presence
                                 });
 
                                 // Presence Subscribed?
                                 if (settings.subscribed) return;
 
-                                // See Who's Here Now
+                                // See Who's Here Now?
+                                if (noheresync) return;
                                 SELF['here_now']({
-                                    channel: channel,
-                                    callback: function (here) {
+                                    'channel': channel,
+                                    'callback': function (here) {
                                         each('uuids' in here ? here['uuids'] : [],
 
                                         function (uuid) {
@@ -715,7 +807,7 @@ define([], function () {
 
                                 // Connect to PubNub Subscribe Servers
                                 SUB_RECEIVER = xdr({
-                                    timeout: SUB_TIMEOUT,
+                                    timeout: sub_timeout,
                                     callback: jsonp,
                                     data: {
                                         'uuid': UUID
@@ -742,12 +834,12 @@ define([], function () {
                                                 if (success && channel.disconnected) {
                                                     channel.disconnected = 0;
                                                     channel.reconnect(channel.name);
-                                                } else channel.error();
+                                                }
                                             });
                                         });
                                     },
                                     success: function (messages) {
-                                        if (!messages) return timeout(_connect, 10);
+                                        if (!messages) return timeout(_connect, windowing);
 
                                         // Connect
                                         each_channel(function (channel) {
@@ -757,11 +849,10 @@ define([], function () {
                                         });
 
                                         // Restore Previous Connection Point if Needed
-                                        if (!TIMETOKEN && SUB_RESTORE) TIMETOKEN = db.get(SUBSCRIBE_KEY) || messages[1];
-                                        else TIMETOKEN = messages[1];
+                                        TIMETOKEN = !TIMETOKEN && SUB_RESTORE && db['get'](SUBSCRIBE_KEY) || messages[1];
 
                                         // Update Saved Timetoken
-                                        db.set(SUBSCRIBE_KEY, messages[1]);
+                                        db['set'](SUBSCRIBE_KEY, messages[1]);
 
                                         // Route Channel <---> Callback for Message
                                         var next_callback = (function () {
@@ -783,7 +874,7 @@ define([], function () {
                                             next[0](msg, messages, next[1]);
                                         });
 
-                                        timeout(_connect, 10);
+                                        timeout(_connect, windowing);
                                     }
                                 });
                             }
@@ -853,12 +944,14 @@ define([], function () {
 
                 function each_channel(callback) {
                     each(generate_channel_list(CHANNELS), function (channel) {
-                        callback(CHANNELS[channel] || {});
+                        var chan = CHANNELS[channel];
+                        if (!chan) return;
+                        callback(chan);
                     });
                 }
 
                 if (!UUID) UUID = SELF['uuid']();
-                db.set(SUBSCRIBE_KEY + 'uuid', UUID);
+                db['set'](SUBSCRIBE_KEY + 'uuid', UUID);
 
                 // Announce Leave Event
                 LEAVE = function (channel, blocking) {
@@ -961,8 +1054,8 @@ define([], function () {
         // jQuery Interface
         window['jQuery'] && (window['jQuery']['PUBNUB'] = PUBNUB);
 
-        // For Testling.js - http://testling.com/
-        typeof module !== 'undefined' && (module.exports = PUBNUB) && ready();
+        // For Modern JS + Testling.js - http://testling.com/
+        typeof (module) !== 'undefined' && (module['exports'] = PUBNUB) && ready();
 
     })();
 
