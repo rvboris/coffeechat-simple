@@ -215,7 +215,8 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
             user: {
                 id: userModel.id(),
                 name: userModel.name(),
-                paramAudio: userModel.paramAudio()
+                paramAudio: userModel.paramAudio(),
+                paramExit: userModel.paramExit()
             }
         });
 
@@ -241,15 +242,12 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
         });
     });
 
-    userModel.paramAudio.subscribe(function (audio) {
-        userModel.paramAudioText(audio ? 'выкл' : 'вкл');
-        jstorage.set(hashModel.channelId(), {
-            user: {
-                id: userModel.id(),
-                name: userModel.name(),
-                paramAudio: userModel.paramAudio()
-            }
-        });
+    userModel.paramAudio.subscribe(function () {
+        utils.saveUserChannel(hashModel, userModel);
+    });
+
+    userModel.paramExit.subscribe(function () {
+        utils.saveUserChannel(hashModel, userModel);
     });
 
     hasher.prependHash = '';
@@ -275,21 +273,24 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
         }
 
         if (savedChannel && savedChannel.user) {
-            userModel.name(savedChannel.user.name);
-            userModel.paramAudio(savedChannel.user.paramAudio);
+            if (savedChannel.user.name) {
+                userModel.name(savedChannel.user.name);
+            }
+
+            if (savedChannel.user.paramAudio) {
+                userModel.paramAudio(savedChannel.user.paramAudio);
+            }
+
+            if (savedChannel.user.paramExit) {
+                userModel.paramExit(savedChannel.user.paramExit);
+            }
         }
     });
 
     hasher.init(userModel);
     hasher.replaceHash(hashModel.fullHash());
 
-    jstorage.set(hashModel.channelId(), {
-        user: {
-            id: userModel.id(),
-            name: userModel.name(),
-            paramAudio: userModel.paramAudio()
-        }
-    });
+    utils.saveUserChannel(hashModel, userModel);
 
     pubnubModel.init(userModel);
     pubnubModel.subscribe();
@@ -302,9 +303,13 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
 
         var heightControl = function (currentHeight) {
             var heightOffset = $('.messagebox').outerHeight(true) - $('.messagebox').height() + $('.typing').outerHeight();
-            var rows = $('.row');
+            var rows = $('.row-fluid');
 
             var complete = function(height) {
+                if (height > 400) {
+                    height = 400;
+                }
+
                 chatModel.style({ height: height + 'px' });
             };
 
@@ -315,7 +320,7 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
 
                 utils.deferChecker(function (height) {
                     heightOffset += height;
-
+                    
                     if (idx === rows.length - 1) {
                         complete(currentHeight - heightOffset);
                     }
@@ -363,7 +368,7 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
 
         $bootstrap('.main-buttons .invite').popover({
             trigger: 'manual',
-            placement: 'left',
+            placement: 'bottom',
             html: true,
             title: 'Пригласить участника',
             content: Templates.invite({ link: hashModel.getLink() })

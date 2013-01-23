@@ -1,4 +1,4 @@
-define([], function () {
+define(['libs/jstorage'], function (jstorage) {
     return {
         randomString: function () {
             return Math.random().toString(36).substring(7);
@@ -131,6 +131,16 @@ define([], function () {
             if (!utils.isAlphanumeric(name)) {
                 return 'Допускаются только буквы и цифры';
             }
+        },
+        saveUserChannel: function(hashModel, userModel) {
+            jstorage.set(hashModel.channelId(), {
+                user: {
+                    id: userModel.id(),
+                    name: userModel.name(),
+                    paramAudio: userModel.paramAudio(),
+                    paramExit: userModel.paramExit()
+                }
+            });
         }
     };
 });

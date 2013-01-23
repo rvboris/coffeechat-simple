@@ -6,15 +6,20 @@ define(['libs/jquery', 'libs/knockout'], function ($, ko) {
         this.name = ko.observable(this.defaultName);
 
         this.paramAudio = ko.observable(true);
-        this.paramAudioText = ko.observable(this.paramAudio() ? 'выкл' : 'вкл');
+        this.paramExit = ko.observable(true);
 
-        this.toogleAudio = $.proxy(function() {
-            this.paramAudio(!this.paramAudio());
-        }, this);
+        this.paramSwitcher = function(value) {
+            return value ? 'выкл' : 'вкл';
+        };
 
-        this.toogleNameEditable = $.proxy(function() {
-            this.nameEditable(true);
-            this.nameEditableError(false);
+        this.toogleParam = $.proxy(function(paramName) {
+            return $.proxy(function() {
+                if (!this[paramName]) {
+                    return;
+                }
+
+                this[paramName](!this[paramName]());
+            }, this);
         }, this);
     };
 

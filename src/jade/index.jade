@@ -31,30 +31,26 @@ body
 
   #loader(data-bind='visible: !chatModel.isReady()')
 
-  #app.container(data-bind='visible: chatModel.isReady()', style='display: none')
-    .row.header
-      .span12
+  #app.container-fluid(data-bind='visible: chatModel.isReady()', style='display: none')
+    .row-fluid.header
+      .span3.logo
         h3 Coffeechat
         span.label.label-info beta
-    .row.controls
+      .span5.hidden-phone.hidden-tablet
+      .span4.main-buttons
+        .btn-group
+          button(type='button', data-bind='click: chatModel.invite', data-toggle='button').btn.btn-success.invite
+            i.icon-user.icon-white
+            |  Пригласить
+          button(type='button', data-bind='click: chatModel.exit').btn.btn-danger.exit
+            i.icon-off.icon-white
+            |  Выйти
+    .row-fluid.controls
       .span3.username
         a(href='#', id='username', data-bind='text: userModel.name()') Гость
-      .span4.offset5.btn-group.main-buttons
-        button(type='button', data-bind='click: chatModel.invite', data-toggle='button').btn.btn-success.invite
-          i.icon-user.icon-white
-          |  Пригласить
-        button(type='button', data-bind='click: chatModel.exit').btn.btn-danger.exit
-          i.icon-off.icon-white
-          |  Выйти
-    .row
-      .span3.online
+      .span3.offset6.online
         span(data-bind='text: chatModel.usersOnline(), css: { muted: chatModel.online() === 0, "text-info": chatModel.online() === 1, "text-success": chatModel.online() > 1 }') нет пользователей
-      .span5.offset4.audio
-        span Звуковые уведомления
-        button(type='button', data-bind='click: userModel.toogleAudio').btn.active
-          i(data-bind='css: { on: userModel.paramAudio(), off: !userModel.paramAudio(), "btn-info": userModel.paramAudio(), "btn-inverse": !userModel.paramAudio() }').btn
-          i(data-bind='text: userModel.paramAudioText()').text
-    .row
+    .row-fluid
       pre.span12.messagebox
         div(data-bind='foreach: chatModel.messages(), afterRender: chatModel.scrollToBottom, style: chatModel.style()').messages
           .message
@@ -67,7 +63,7 @@ body
           ul(data-bind='foreach: chatModel.typingUsers()')
             li
               span.label.label-info(data-bind='text: name')
-    .row
+    .row-fluid
       .span12.message-input
         form(data-bind='submit: chatModel.send')
           .input-append
@@ -76,6 +72,18 @@ body
             button(type='submit', data-bind='enable: chatModel.canSend()').btn.btn-primary
               i.icon-comment.icon-white
               |  Отправить
+    .row-fluid
+      .span4.audio
+        span звуковое уведомление
+        button(type='button', data-bind='click: userModel.toogleParam("paramAudio")').btn.active
+          i(data-bind='css: { on: userModel.paramAudio(), off: !userModel.paramAudio(), "btn-info": userModel.paramAudio(), "btn-inverse": !userModel.paramAudio() }').btn
+          i(data-bind='text: userModel.paramSwitcher(userModel.paramAudio())').text
+      .span8.audio
+        span выход через 15 мин неактивности
+        button(type='button', data-bind='click: userModel.toogleParam("paramExit")').btn.active
+          i(data-bind='css: { on: userModel.paramExit(), off: !userModel.paramExit(), "btn-info": userModel.paramExit(), "btn-inverse": !userModel.paramExit() }').btn
+          i(data-bind='text: userModel.paramSwitcher(userModel.paramExit())').text
+
   if (env == 'development')
     script(defer='true', async="true", data-main='../src/js/config', src='../src/js/libs/require.js?v' + version())
   else

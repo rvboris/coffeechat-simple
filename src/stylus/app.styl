@@ -2,31 +2,46 @@
   margin 50px auto 0 auto
 
 #app
-  .header h3, .header span
-    float left
-  .header span
-    margin 10px 0 0 10px
-  .main-buttons, .audio
+  max-width 820px
+  margin 0 auto
+
+  .logo
+    line-height 60px
+    height 60px
+    h3, span
+      float left
+    span
+      margin 10px 0 0 10px
+
+  .main-buttons
     text-align right
-  .main-buttons .popover
-    width 325px
-    input
-      cursor text
-
-  .controls
-    margin-bottom 10px
-
-    #username
-      padding 3px 0
-      font-size 14px
+    line-height 60px
+    .popover
+      width 325px
       line-height 30px
-      margin 0
-      font-weight lighter
-      border-bottom 1px dashed #CCC
-      color #000
+      .help-block
+        margin 0
+      input
+        width 268px
+        cursor text
+
+  @media (max-width: 767px)
+    .main-buttons
+      text-align left
+      line-height 30px
+
+  #username
+    padding 3px 0
+    font-size 14px
+    line-height 30px
+    margin 0
+    font-weight lighter
+    border-bottom 1px dashed #CCC
+    color #000
 
   .online
     line-height 30px
+    text-align right
 
   .audio > button
     padding 2px
@@ -93,6 +108,9 @@
       padding 4px 120px 4px 0
       input
         width inherit
+
+    form
+      margin 0
 
     button
       width 120px
