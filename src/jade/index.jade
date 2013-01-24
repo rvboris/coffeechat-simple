@@ -27,64 +27,96 @@ body
   //if lt IE 8
     p.chromeframe You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.
 
+  //- Global notyfications
   .notifications.top-right
 
+  //- Loader spinner
   #loader(data-bind='visible: !chatModel.isReady()')
 
+  //- App container
   #app.container-fluid(data-bind='visible: chatModel.isReady()', style='display: none')
+
+    //- Header
     .row-fluid.header
+
+      //- Logo section
       .span3.logo
         h3 Coffeechat
         span.label.label-info beta
-      .span5.hidden-phone.hidden-tablet
-      .span4.main-buttons
+
+      //- Main buttons section
+      .span4.offset5.main-buttons
         .btn-group
           button(type='button', data-bind='click: chatModel.invite', data-toggle='button').btn.btn-success.invite
-            i.icon-user.icon-white
+            i.icon-plus-sign.icon-white
             |  Пригласить
           button(type='button', data-bind='click: chatModel.exit').btn.btn-danger.exit
-            i.icon-off.icon-white
+            i.icon-signout.icon-white
             |  Выйти
+
+    //- Channel info section
     .row-fluid.controls
       .span3.username
         a(href='#', id='username', data-bind='text: userModel.name()') Гость
       .span3.offset6.online
         span(data-bind='text: chatModel.usersOnline(), css: { muted: chatModel.online() === 0, "text-info": chatModel.online() === 1, "text-success": chatModel.online() > 1 }') нет пользователей
+    
+    //- Messages container
     .row-fluid
       pre.span12.messagebox
         div(data-bind='foreach: chatModel.messages(), afterRender: chatModel.scrollToBottom, style: chatModel.style()').messages
+
+          //- Message
           .message
             span(data-bind='text: formattedTime()').time
             span(data-bind='text: formattedName()').name
             span(data-bind='html: getText()').text
 
+        //- Typing notyfication
         .typing(data-bind='style: { visibility: chatModel.typingUsers().length > 0 ? "visible" : "hidden" }')
           span Вводят сообщение:
           ul(data-bind='foreach: chatModel.typingUsers()')
             li
               span.label.label-info(data-bind='text: name')
+
+    //- Message input
     .row-fluid
       .span12.message-input
         form(data-bind='submit: chatModel.send')
           .input-append
             .input-wrapper.clearfix
               input(type='text', name='text', placeholder='сообщение', maxlength='1500', autofocus='true', data-bind='enable: chatModel.canSend(), event: { keypress: chatModel.typing }').input-block-level
-            button(type='submit', data-bind='enable: chatModel.canSend()').btn.btn-primary
-              i.icon-comment.icon-white
-              |  Отправить
-    .row-fluid
+            .btn-group
+              button(type='submit', data-bind='enable: chatModel.canSend()').btn.btn-primary.picture
+                i.icon-picture.icon-white
+              button(type='submit', data-bind='enable: chatModel.canSend()').btn.btn-primary.text
+                i.icon-comments.icon-white
+                span.hidden-phone Отправить
+
+    //- User params
+    footer.row-fluid.hidden-phone
+      .span2.social
+        .btn-group
+          button(type='button', data-bind='click: chatModel.invite', data-toggle='button').btn.btn-info
+            i.icon-twitter.icon-white
+          button(type='button', data-bind='click: chatModel.exit').btn.btn-info
+            i.icon-facebook.icon-white
+          button(type='button', data-bind='click: chatModel.exit').btn.btn-info
+            i.icon-google-plus.icon-white
       .span4.audio
-        span звуковое уведомление
+        span Звуковое уведомление
         button(type='button', data-bind='click: userModel.toogleParam("paramAudio")').btn.active
           i(data-bind='css: { on: userModel.paramAudio(), off: !userModel.paramAudio(), "btn-info": userModel.paramAudio(), "btn-inverse": !userModel.paramAudio() }').btn
           i(data-bind='text: userModel.paramSwitcher(userModel.paramAudio())').text
-      .span8.audio
-        span выход через 15 мин неактивности
+      .span6.exit
+        span Выход через 15 мин неактивности
         button(type='button', data-bind='click: userModel.toogleParam("paramExit")').btn.active
           i(data-bind='css: { on: userModel.paramExit(), off: !userModel.paramExit(), "btn-info": userModel.paramExit(), "btn-inverse": !userModel.paramExit() }').btn
           i(data-bind='text: userModel.paramSwitcher(userModel.paramExit())').text
+      
 
+  //- Scripts
   if (env == 'development')
     script(defer='true', async="true", data-main='../src/js/config', src='../src/js/libs/require.js?v' + version())
   else
-    script(defer='true', async="true", src='//' + cdnHost + '/js/' + jsFileName + '?v' + version())
+    script(defer='true', async="true", src='//' + cdnHost + '/js/' + jsFileName)

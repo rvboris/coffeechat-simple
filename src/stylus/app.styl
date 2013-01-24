@@ -1,3 +1,7 @@
+box-sizing()
+  box-sizing border-box
+  -moz-box-sizing border-box
+
 #loader
   margin 50px auto 0 auto
 
@@ -12,6 +16,13 @@
       float left
     span
       margin 10px 0 0 10px
+
+  @media (max-width: 767px)
+    .logo
+      line-height 40px
+      height 40px
+      h3
+        margin 0
 
   .main-buttons
     text-align right
@@ -29,6 +40,10 @@
     .main-buttons
       text-align left
       line-height 30px
+      .btn-group
+        width 100%
+        button
+          width 50%
 
   #username
     padding 3px 0
@@ -43,23 +58,12 @@
     line-height 30px
     text-align right
 
-  .audio > button
-    padding 2px
-    width 75px
-    margin-left 5px
-    & > i
-      &.on, &.off
-        height 9px
-      &.on
-        float left
-      &.off
-        float right
-      &.text
-        margin 0 5px
+  @media (max-width: 767px)
+    .online
+      text-align left
 
   .messagebox
-    box-sizing border-box
-    -moz-box-sizing border-box
+    box-sizing()
     margin-top 10px
 
     .messages
@@ -104,16 +108,58 @@
     position relative
     .input-wrapper
       width 100%
-      box-sizing border-box
-      padding 4px 120px 4px 0
+      box-sizing()
+      padding 4px 160px 4px 0
       input
         width inherit
 
     form
       margin 0
 
-    button
-      width 120px
+    .btn-group
+      width 160px
       position absolute
       right 0
       top 4px
+
+      .picture
+        width 40px
+      .text
+        width 120px
+
+      span
+        margin 0 5px
+
+    @media (max-width: 767px)
+      .input-wrapper
+        padding 4px 80px 4px 0
+      .btn-group
+        width 80px
+        .picture
+          width 40px
+        .text
+          width 40px
+
+  footer
+    margin-top 10px
+    
+    .audio > button, .exit > button
+      padding 2px
+      width 75px
+      margin-left 5px
+      & > i
+        &.on, &.off
+          height 9px
+        &.on
+          float left
+        &.off
+          float right
+        &.text
+          margin 0 5px
+
+    .social
+      button
+        padding 2px 0
+        width 40px
+        & > i
+          height 9px

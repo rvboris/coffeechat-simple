@@ -291,15 +291,15 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
             var rows = $('.row-fluid');
 
             var complete = function(height) {
-                if (height > 400) {
-                    height = 400;
+                if (height > 350) {
+                    height = 350;
                 }
 
                 chatModel.style({ height: height + 'px' });
             };
 
             rows.each(function(idx, element) {
-                if (idx === 3) {
+                if ($(element).children('.messagebox').length > 0) {
                     return;
                 }
 
@@ -340,13 +340,14 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
 
         $editable('#username').editable({
             type: 'text',
-            title: 'ваше имя',
+            title: 'Ваше имя',
             placement: 'right',
             send: 'never',
             value: userModel.name(),
             validate: function(value) {
                 return utils.validateUserName(utils, value);
-            }
+            },
+            clear: false
         }).on('save', function(e, params) {
             userModel.name(params.newValue);
         });

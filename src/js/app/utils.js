@@ -16,6 +16,9 @@ define(['libs/jstorage'], function (jstorage) {
         isAlphanumeric: function (str) {
             return (/^[a-zа-я0-9\s]+$/i).test(str);
         },
+        parseUrl: function(str) {
+            return str.replace(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, '<a href="$&" target="_blank">$&</a>');
+        },
         deferChecker: function(callback, test, failback, limit, speed) {
             if (typeof failback !== 'function') {
                 failback = function() {};

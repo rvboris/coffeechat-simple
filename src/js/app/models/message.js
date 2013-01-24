@@ -1,4 +1,4 @@
-define(['libs/knockout', 'libs/moment', 'libs/jquery'], function (ko, moment, $) {
+define(['libs/knockout', 'libs/moment', 'libs/jquery', 'app/utils'], function (ko, moment, $, utils) {
     return function () {
         this.type = ko.observable();
         this.data = ko.observable();
@@ -36,7 +36,13 @@ define(['libs/knockout', 'libs/moment', 'libs/jquery'], function (ko, moment, $)
         this.repeatName = '...';
 
         this.getText = ko.computed($.proxy(function() {
-            return this.data();
+            var parsedText = this.data();
+
+            if (!utils.isEmpty(parsedText)) {
+                parsedText = utils.parseUrl(parsedText);
+            }
+
+            return parsedText;
         }, this));
 
         this.formattedTime = ko.computed($.proxy(function () {
