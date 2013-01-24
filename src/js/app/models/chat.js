@@ -41,7 +41,9 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
         this.isActive.subscribe($.proxy(function(active) {
             if (!active) {
                 exitTimeout = setTimeout($.proxy(function() {
-                    this.exit();
+                    if (userModel.paramExit()) {
+                        this.exit();
+                    }
                 }, this), 900000); // 15 min
             } else {
                 Tinycon.setBubble(0);

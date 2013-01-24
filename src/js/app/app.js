@@ -211,14 +211,7 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
     });
 
     userModel.name.subscribe(function (name) {
-        jstorage.set(hashModel.channelId(), {
-            user: {
-                id: userModel.id(),
-                name: userModel.name(),
-                paramAudio: userModel.paramAudio(),
-                paramExit: userModel.paramExit()
-            }
-        });
+        utils.saveUserChannel(hashModel, userModel);
 
         if (!pubnubModel.pubnub) {
             return;
@@ -273,17 +266,9 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
         }
 
         if (savedChannel && savedChannel.user) {
-            if (savedChannel.user.name) {
-                userModel.name(savedChannel.user.name);
-            }
-
-            if (savedChannel.user.paramAudio) {
-                userModel.paramAudio(savedChannel.user.paramAudio);
-            }
-
-            if (savedChannel.user.paramExit) {
-                userModel.paramExit(savedChannel.user.paramExit);
-            }
+            userModel.name(savedChannel.user.name);
+            userModel.paramAudio(savedChannel.user.paramAudio);
+            userModel.paramExit(savedChannel.user.paramExit);
         }
     });
 
@@ -320,7 +305,7 @@ function (Templates, modernizr, $bootstrap, $notify, bootbox, $editable, $, $spi
 
                 utils.deferChecker(function (height) {
                     heightOffset += height;
-                    
+
                     if (idx === rows.length - 1) {
                         complete(currentHeight - heightOffset);
                     }
