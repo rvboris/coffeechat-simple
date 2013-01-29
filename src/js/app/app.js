@@ -1,6 +1,6 @@
-define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/bootstrap.clickover', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/bootstrap.editable', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
+define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/bootstrap.clickover', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/bootstrap.editable', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'libs/uploader/jquery-plugin', 'models/chat', 'models/hash', 'models/user', 'models/message'],
 
-function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $editable, $, $spin, ko, hasher, jstorage, moment, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
+function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $editable, $, $spin, ko, hasher, jstorage, moment, utils, commands, pubnub, Visibility, $uploader, chatModel, hashModel, userModel, MessageModel) {
     'use strict';
 
     $('#loader').spin();
@@ -351,7 +351,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
         }).on('save', function(e, params) {
             userModel.name(params.newValue);
         });
-        
+
         $clickover('.main-buttons .invite').clickover({
             trigger: 'manual',
             placement: 'bottom',
@@ -372,6 +372,17 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
             });
 
         $bootstrap('.username h2').tooltip();
+
+        $uploader('#uploader').fineUploader({
+            request: {
+                endpoint: 'http://imm.io/store/',
+                inputName: 'image'
+            },
+            button: $('.message-input .picture'),
+            multiple: false
+        }).on('complete', function (event, id, filename, responseJSON) {
+            console.log(responseJSON);
+        });
 
         ko.applyBindings(new MasterModel(), $('body').get(0));
     });
