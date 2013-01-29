@@ -40,6 +40,8 @@ box-sizing()
     .main-buttons
       text-align left
       line-height 30px
+      .popover
+        left -13px !important
       .btn-group
         width 100%
         button
@@ -142,10 +144,11 @@ box-sizing()
 
   footer
     margin-top 10px
+    line-height 30px
     
     .audio > button, .exit > button
-      padding 2px
-      width 75px
+      padding 4px 4px
+      width 80px
       margin-left 5px
       & > i
         &.on, &.off
@@ -157,9 +160,3 @@ box-sizing()
         &.text
           margin 0 5px
 
-    .social
-      button
-        padding 2px 0
-        width 40px
-        & > i
-          height 9px

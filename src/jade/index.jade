@@ -42,7 +42,8 @@ body
       //- Logo section
       .span3.logo
         h3 Coffeechat
-        span.label.label-info beta
+        span.label.label-info.hidden-phone beta
+        span(data-bind='text: chatModel.usersOnline(), css: { muted: chatModel.online() === 0, "label-info": chatModel.online() === 1, "label-success": chatModel.online() > 1 }').label.visible-phone
 
       //- Main buttons section
       .span4.offset5.main-buttons
@@ -97,11 +98,11 @@ body
     footer.row-fluid.hidden-phone
       .span2.social
         .btn-group
-          button(type='button', data-bind='click: chatModel.invite', data-toggle='button').btn.btn-info
+          a(href='https://twitter.com/share?url=http://coffeechat.ru', target="_blank").btn.btn-info
             i.icon-twitter.icon-white
-          button(type='button', data-bind='click: chatModel.exit').btn.btn-info
+          a(href='#').btn.btn-info
             i.icon-facebook.icon-white
-          button(type='button', data-bind='click: chatModel.exit').btn.btn-info
+          a(href='https://plus.google.com/share?url=http://coffeechat.ru', target="_blank").btn.btn-info
             i.icon-google-plus.icon-white
       .span4.audio
         span Звуковое уведомление
