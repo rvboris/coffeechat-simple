@@ -20,6 +20,10 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
         this.users = ko.observableArray();
         this.canSend = ko.observable(false);
 
+        this.canSendPicture = ko.computed($.proxy(function() {
+            return window.File && window.FileReader && window.FileList && window.Blob && this.canSend();
+        }, this));
+
         this.style = ko.observable({
             height: '0px'
         });

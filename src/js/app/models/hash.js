@@ -21,8 +21,8 @@ define(['libs/knockout'], function (ko) {
             owner: this
         });
 
-        this.getLink = function () {
+        this.getLink = ko.computed($.proxy(function () {
             return window.location.protocol + '//' + window.location.host + '/#' + this.channelId();
-        };
+        }, this));
     };
 });

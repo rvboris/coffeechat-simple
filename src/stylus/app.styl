@@ -48,7 +48,7 @@ box-sizing()
         button
           width 50%
 
-  #username
+  .username a
     padding 3px 0
     font-size 14px
     line-height 30px
@@ -126,15 +126,37 @@ box-sizing()
       top 4px
       .text
         width 120px
+      .picture 40px
       span
         margin 0 5px
+      .upload
+        float left
+        position relative
+        width 40px
+        height 30px
+        overflow hidden
+        button
+          position absolute
+          width 100%
+          height 100%
+        input
+          font 500px monospace
+          opacity 0
+          cursor pointer
+
+          position absolute
+          z-index 1
+          top 0
+          right 0
+          padding 0
+          margin 0
 
     @media (max-width: 767px)
       .input-wrapper
         padding 4px 80px 4px 0
       .btn-group
         width 80px
-        .text
+        .picture, .text
           width 40px
 
   footer

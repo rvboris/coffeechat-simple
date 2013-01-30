@@ -58,7 +58,7 @@ body
     //- Channel info section
     .row-fluid.controls
       .span3.username
-        a(href='#', id='username', data-bind='text: userModel.name()') Гость
+        a(href='#', data-bind='text: userModel.name()') Гость
       .span3.offset6.online
         span(data-bind='text: chatModel.usersOnline(), css: { muted: chatModel.online() === 0, "text-info": chatModel.online() === 1, "text-success": chatModel.online() > 1 }') нет пользователей
     
@@ -88,9 +88,11 @@ body
             .input-wrapper.clearfix
               input(type='text', name='text', placeholder='сообщение', maxlength='1500', autofocus='true', data-bind='enable: chatModel.canSend(), event: { keypress: chatModel.typing }').input-block-level
             .btn-group
-              #uploader
-              a(data-bind='enable: chatModel.canSend()').btn.btn-primary.picture
-                i.icon-picture.icon-white
+              div.upload
+                button(data-bind='enable: chatModel.canSendPicture()').btn.btn-primary.picture
+                  i.icon-picture.icon-white
+                  input(type='file')
+
               button(type='submit', data-bind='enable: chatModel.canSend()').btn.btn-primary.text
                 i.icon-comments.icon-white
                 span.hidden-phone Отправить
