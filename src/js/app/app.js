@@ -412,10 +412,18 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
                 reader.onloadend = (function(file) {
                     return function(e) {
                         var data = new FormData();
+                        
                         data.append('image', file);
                         data.append('name', file.name);
-                        
-                        $.post('/proxy?url=imm.io/store/', data).done(function(result) {
+
+                        $.ajax({
+                            url: '/proxy?url=imm.io/store/',
+                            data: data,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            type: 'POST'
+                        }).done(function(result) {
                             if (result.success === true) {
                                 responses.push({
                                     img: result.payload.uri,
