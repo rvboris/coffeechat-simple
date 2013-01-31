@@ -718,9 +718,7 @@ Fresco.skins = {
                         position: "absolute",
                         bottom: e,
                         left: f
-                    }).css(j)), Canvas.init(q), o = q.getContext("2d"), Z._m && ($(Z._m).remove(), Z._m = null), Z._m = q, Z[l(m()) ? n : h].append(Z._m), g = a, g.x = 0, g.y = 0, Canvas.dPA(o, i, {
-                        dimensions: a
-                    })
+                    }).css(j)), o = q.getContext("2d"), Z._m && ($(Z._m).remove(), Z._m = null), Z._m = q, Z[l(m()) ? n : h].append(Z._m), g = a, g.x = 0, g.y = 0
                 }
                 for (var g, p, o = o || null, q = ["", "", "", "", "", "0000099999909999009999900999000999000999", "00000900000090009090000090009090009090009", "00000900000090009090000090000090000090009", "00000999990099990099990009990090000090009", "00000900000090900090000000009090000090009", "00000900000090090090000090009090009090009", "0000090000009000909999900999000999000999000000", "", "", "", "", ""], r = 0, s = q.length, t = 0, u = q.length; u > t; t++) r = Math.max(r, q[t].length || 0);
                 p = {
