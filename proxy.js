@@ -1,35 +1,10 @@
-var connect = require('connect');
-var port    = process.env.port || 3535;
-var needle  = require('needle');
+var http = require('http'),
+    httpProxy = require('http-proxy');
 
-var app = connect()
-    .use(connect.query())
-    .use(connect.bodyParser())
-    .use(function (req, res) {
-        console.log(req.body);
-        if (!req.query.url || req.body.length === 0) {
-            res.statusCode = 500;
-            res.end();
-            return;
-        }
+    var options = {
+  router: {
+    'coffeechat.ru/proxy': 'imm.io/store'
+  }
+};
 
-        needle.post('http://' + req.query.url, {
-            image: req.body.image,
-            name: req.body.name
-        }, {
-            multipart: true
-        }, function (err, response, body) {
-            if (err) {
-                res.statusCode = 500;
-                res.end();
-                return;
-            }
-
-            res.writeHead(200, {
-                'Content-Type': 'application/json'
-            });
-            res.write(body);
-            res.end();
-        });
-    })
-    .listen(port);
+httpProxy.createServer(80, 'imm.io').listen(3535);

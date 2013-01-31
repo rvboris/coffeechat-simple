@@ -375,7 +375,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
 
         $uploader('#uploader').fineUploader({
             request: {
-                endpoint: '/proxy/?url=imm.io/store/',
+                endpoint: '/proxy/store/',
                 inputName: 'image'
             },
             button: $('.message-input .picture'),
