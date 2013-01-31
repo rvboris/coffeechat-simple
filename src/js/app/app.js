@@ -373,7 +373,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
 
         $bootstrap('.username h2').tooltip();
 
-        $uploader('#uploader').fineUploader({
+        $uploader('.uploader').fineUploader({
             request: {
                 endpoint: '/store',
                 inputName: 'image'
@@ -381,10 +381,12 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
             button: $('.message-input .picture'),
             multiple: false
         }).on('upload', function() {
-
+            chatModel.pictureLoading(true);
         }).on('error', function() {
-
+            chatModel.pictureLoading(false);
         }).on('complete', function(e, id, filename, response) {
+            chatModel.pictureLoading(false);
+            
             if (!response.success) {
                 return;
             }

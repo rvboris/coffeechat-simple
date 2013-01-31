@@ -24,6 +24,8 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
             return window.File && window.FileReader && window.FileList && window.Blob && this.canSend();
         }, this));
 
+        this.pictureLoading = ko.observable(false);
+
         this.style = ko.observable({
             height: '0px'
         });
