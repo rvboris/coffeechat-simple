@@ -44,20 +44,16 @@ define(['libs/knockout', 'libs/moment', 'libs/jquery', 'app/utils'], function (k
                 }
             }
 
-            if (this.type() === 'images') {
-                var images;
+            if (this.type() === 'image') {
+                var image;
 
                 try {
-                    images = JSON.parse(parsedText);
+                    image = JSON.parse(parsedText);
                 } catch (e) {
                     return '';
                 }
 
-                parsedText = '';
-
-                $.each(images, function() {
-                    parsedText += '<img src="' + this.img +'" width="' + this.w + '" height="' + this.h + '">';
-                });
+                parsedText = '<img src="http://imm.io/' + image.uid +'" width="' + image.w + '" height="' + image.h + '">';
             }
 
             return parsedText;

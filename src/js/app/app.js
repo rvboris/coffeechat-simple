@@ -62,7 +62,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
     var pubnubDispatcher = {
         callback: function (jsonMessage) {
             parseMessage(jsonMessage, function (message) {
-                if (message.type() === 'text' || message.type() === 'images') {
+                if (message.type() === 'text' || message.type() === 'image') {
                     chatModel.messages.push(message);
                     chatModel.scrollToBottom();
                     chatModel.typingUsers.remove(function(typingUser) {
@@ -97,7 +97,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
                 }
             }, pubnubModel.historyHandler(function(message) {
                 parseMessage(message, function (message) {
-                    if (message.type() !== 'text' || message.type() !== 'images') {
+                    if (message.type() !== 'text' || message.type() !== 'image') {
                         return;
                     }
 
@@ -375,49 +375,42 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
 
         $uploader('#uploader').fineUploader({
             request: {
-                endpoint: '/proxy/store/',
+                endpoint: '/store',
                 inputName: 'image'
             },
             button: $('.message-input .picture'),
             multiple: false
-        }).on('complete', function (event, id, filename, responseJSON) {
-            console.log(responseJSON);
-        });
+        }).on('upload', function() {
 
-        $('.upload input').on('change', function(e) {
-            var responses = [];
+        }).on('error', function() {
 
-            var readyToSend = function() {
-                if (responses.length < e.target.files.length) {
-                    return;
-                }
+        }).on('complete', function(e, id, filename, response) {
+            if (!response.success) {
+                return;
+            }
 
-                responses = $.grep(responses, function(img) {
-                    return img !== null;
-                });
+            var message = new MessageModel();
 
-                var message = new MessageModel();
+            message.time(moment().unix());
+            message.name(userModel.name());
+            message.text(JSON.stringify({
+                uid: response.payload.uid,
+                w: response.payload.width,
+                h: response.payload.height
+            }) + '|image');
 
-                message.time(moment().unix());
-                message.name(userModel.name());
-                message.text(JSON.stringify(responses) + '|images');
+            message = utils.prepareMessage(ko.toJS(message));
 
-                message = utils.prepareMessage(ko.toJS(message));
+            chatModel.lastMessage(message);
+            chatModel.canSend(false);
 
-                chatModel.lastMessage(message);
-
-                chatModel.canSend(false);
-
-                pubnubModel.pubnub.publish({
-                    channel: pubnubModel.channel(),
-                    message: JSON.stringify(message),
-                    callback: $.proxy(function () {
-                        chatModel.canSend(true);
-                    }, this)
-                });
-            };
-
-            
+            pubnubModel.pubnub.publish({
+                channel: pubnubModel.channel(),
+                message: JSON.stringify(message),
+                callback: $.proxy(function () {
+                    chatModel.canSend(true);
+                }, this)
+            });
         });
 
         ko.applyBindings(new MasterModel(), $('body').get(0));
