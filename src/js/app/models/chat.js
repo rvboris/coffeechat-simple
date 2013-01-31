@@ -21,7 +21,7 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
         this.canSend = ko.observable(false);
 
         this.canSendPicture = ko.computed($.proxy(function() {
-            return window.File && window.FileReader && window.FileList && window.Blob && this.canSend();
+            return window.File && window.FileReader && window.FileList && window.Blob && this.canSend() && !this.pictureLoading();
         }, this));
 
         this.pictureLoading = ko.observable(false);
