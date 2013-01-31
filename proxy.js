@@ -6,6 +6,7 @@ var app = connect()
     .use(connect.query())
     .use(connect.bodyParser())
     .use(function (req, res) {
+        console.log(req.body);
         if (!req.query.url || req.body.length === 0) {
             res.statusCode = 500;
             res.end();

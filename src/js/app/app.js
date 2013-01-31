@@ -1,6 +1,6 @@
-define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/bootstrap.clickover', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/bootstrap.editable', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
+define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/bootstrap.clickover', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/bootstrap.editable', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'libs/fineuploader/jquery-plugin', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
 
-function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $editable, $, $spin, ko, hasher, jstorage, moment, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
+function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $editable, $, $spin, ko, hasher, jstorage, moment, $uploader, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
     'use strict';
 
     $('#loader').spin();
@@ -373,6 +373,17 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
 
         $bootstrap('.username h2').tooltip();
 
+        $uploader('#uploader').fineUploader({
+            request: {
+                endpoint: '/proxy/?url=imm.io/store/',
+                inputName: 'image'
+            },
+            button: $('.message-input .picture'),
+            multiple: false
+        }).on('complete', function (event, id, filename, responseJSON) {
+            console.log(responseJSON);
+        });
+
         $('.upload input').on('change', function(e) {
             var responses = [];
 
@@ -406,44 +417,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
                 });
             };
 
-            $.each(e.target.files, function() {
-                var reader = new FileReader();
-
-                reader.onloadend = (function(file) {
-                    return function(e) {
-                        var data = new FormData();
-                        
-                        data.append('image', file);
-                        data.append('name', file.name);
-
-                        $.ajax({
-                            url: '/proxy?url=imm.io/store/',
-                            data: data,
-                            cache: false,
-                            contentType: false,
-                            processData: false,
-                            type: 'POST'
-                        }).done(function(result) {
-                            if (result.success === true) {
-                                responses.push({
-                                    img: result.payload.uri,
-                                    w: result.payload.width,
-                                    h: result.payload.height
-                                });
-                            } else {
-                                responses.push(null);
-                            }
-
-                            readyToSend();   
-                        }).error(function() {
-                            responses.push(null);
-                            readyToSend();
-                        });
-                    };
-                })(this);
-
-                reader.readAsDataURL(this);
-            });
+            
         });
 
         ko.applyBindings(new MasterModel(), $('body').get(0));

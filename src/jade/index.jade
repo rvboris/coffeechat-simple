@@ -88,10 +88,9 @@ body
             .input-wrapper.clearfix
               input(type='text', name='text', placeholder='сообщение', maxlength='1500', autofocus='true', data-bind='enable: chatModel.canSend(), event: { keypress: chatModel.typing }').input-block-level
             .btn-group
-              div.upload
-                button(data-bind='enable: chatModel.canSendPicture()').btn.btn-primary.picture
-                  i.icon-picture.icon-white
-                  input(type='file')
+              #uploader
+              a(data-bind='enable: chatModel.canSendPicture()').btn.btn-primary.picture
+                i.icon-picture.icon-white
 
               button(type='submit', data-bind='enable: chatModel.canSend()').btn.btn-primary.text
                 i.icon-comments.icon-white
