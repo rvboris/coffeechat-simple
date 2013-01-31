@@ -146,7 +146,7 @@ define(['libs/jstorage'], function (jstorage) {
             });
         },
         imageScale: function(maxW, maxH, srcW, srcH) {
-            var ration = 0;
+            var ratio = 0;
             var resultSize = { w: srcW, h: srcH };
 
             if (srcW > maxW){
