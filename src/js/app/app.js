@@ -1,6 +1,6 @@
-define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/bootstrap.clickover', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/bootstrap.editable', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'libs/fineuploader/jquery-plugin', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
+define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/bootstrap.clickover', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/fresco' 'libs/bootstrap.editable', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'libs/fineuploader/jquery-plugin', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
 
-function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $editable, $, $spin, ko, hasher, jstorage, moment, $uploader, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
+function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fresco, $editable, $, $spin, ko, hasher, jstorage, moment, $uploader, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
     'use strict';
 
     $('#loader').spin();
@@ -386,7 +386,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
             chatModel.pictureLoading(false);
         }).on('complete', function(e, id, filename, response) {
             chatModel.pictureLoading(false);
-            
+
             if (!response.success) {
                 return;
             }
