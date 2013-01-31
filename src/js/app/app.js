@@ -417,9 +417,9 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
                         }).done(function(result) {
                             if (result.success === true) {
                                 responses.push({
-                                    img: result.uri,
-                                    w: result.width,
-                                    h: result.height
+                                    img: result.payload.uri,
+                                    w: result.payload.width,
+                                    h: result.payload.height
                                 });
                             } else {
                                 responses.push(null);
