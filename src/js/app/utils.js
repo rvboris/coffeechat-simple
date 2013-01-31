@@ -166,6 +166,9 @@ define(['libs/jstorage'], function (jstorage) {
                 resultSize.w = srcW * ratio;
             }
 
+            resultSize.w = Math.round(resultSize.w);
+            resultSize.h = Math.round(resultSize.h);
+
             return resultSize;
         }
     };

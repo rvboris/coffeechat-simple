@@ -1,4 +1,4 @@
-define(['libs/knockout', 'libs/moment', 'libs/jquery', 'app/utils'], function (ko, moment, $, utils) {
+define(['compiled/templates', 'libs/knockout', 'libs/moment', 'libs/jquery', 'app/utils'], function (Templates, ko, moment, $, utils) {
     return function () {
         this.type = ko.observable();
         this.data = ko.observable();
@@ -55,7 +55,13 @@ define(['libs/knockout', 'libs/moment', 'libs/jquery', 'app/utils'], function (k
 
                 var imageSize = utils.imageScale(250, 250, image.w, image.h);
 
-                parsedText = '<img src="http://i.imm.io/' + image.src +'" width="' + imageSize.w + '" height="' + imageSize.h + '">';
+                parsedText = Templates.image({
+                    img: {
+                        src: image.src,
+                        w: imageSize.w,
+                        h: imageSize.h
+                    }
+                });
             }
 
             return parsedText;
