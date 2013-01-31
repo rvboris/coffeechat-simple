@@ -48,10 +48,12 @@ define(['libs/knockout', 'libs/moment', 'libs/jquery', 'app/utils'], function (k
                 var images;
 
                 try {
-                    images = JSON.parse(this.parsedText);
+                    images = JSON.parse(parsedText);
                 } catch (e) {
                     return '';
                 }
+
+                parsedText = '';
 
                 $.each(images, function() {
                     parsedText += '<img src="' + this.img +'" width="' + this.w + '" height="' + this.h + '">';
