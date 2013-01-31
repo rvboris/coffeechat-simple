@@ -393,7 +393,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
 
                 message = utils.prepareMessage(ko.toJS(message));
 
-                this.lastMessage(message);
+                chatModel.lastMessage(message);
 
                 chatModel.canSend(false);
 
@@ -411,7 +411,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
 
                 reader.onloadend = (function(file) {
                     return function(e) {
-                        $.post('/proxy', {
+                        $.post('/proxy?url=imm.io/store/', {
                             image: e.target.result,
                             name: file.name
                         }).done(function(result) {
