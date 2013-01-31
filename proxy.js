@@ -15,6 +15,8 @@ var app = connect()
         needle.post('http://' + req.query.url, {
             image: req.body.image,
             name: req.body.name
+        }, {
+            multipart: true
         }, function (err, response, body) {
             if (err) {
                 res.statusCode = 500;

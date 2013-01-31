@@ -166,11 +166,19 @@ module.exports = function (grunt) {
                     'src/js/compiled/require.js',
                 ],
                 dest: 'src/js/compiled/require.js'
-            }
+            },
+            scriptsDebug: {
+                src: [
+                    'src/js/libs/require.js',
+                    'src/js/compiled/require.js',
+                ],
+                dest: 'public/js/' + jsFileName
+            },
         }
     });
 
     grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'concat:styles', 'handlebars', 'wrap']);
     grunt.registerTask('development', ['main', 'bump', 'jade:development', 'mincss']);
     grunt.registerTask('production', ['main', 'jade:production', 'requirejs', 'concat:scripts', 'uglify', 'mincss']);
+    grunt.registerTask('production-debug', ['main', 'jade:production', 'requirejs', 'concat:scriptsDebug', 'mincss']);
 };

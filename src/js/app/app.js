@@ -411,10 +411,11 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
 
                 reader.onloadend = (function(file) {
                     return function(e) {
-                        $.post('/proxy?url=imm.io/store/', {
-                            image: e.target.result,
-                            name: file.name
-                        }).done(function(result) {
+                        var data = new FormData();
+                        data.append('image', file);
+                        data.append('name', file.name);
+                        
+                        $.post('/proxy?url=imm.io/store/', data).done(function(result) {
                             if (result.success === true) {
                                 responses.push({
                                     img: result.payload.uri,
