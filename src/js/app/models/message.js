@@ -38,8 +38,24 @@ define(['libs/knockout', 'libs/moment', 'libs/jquery', 'app/utils'], function (k
         this.getText = ko.computed($.proxy(function() {
             var parsedText = this.data();
 
-            if (!utils.isEmpty(parsedText)) {
-                parsedText = utils.parseUrl(parsedText);
+            if (this.type() === 'text') {
+                if (!utils.isEmpty(parsedText)) {
+                    parsedText = utils.parseUrl(parsedText);
+                }
+            }
+
+            if (this.type() === 'images') {
+                var images;
+
+                try {
+                    images = JSON.parse(this.parsedText);
+                } catch (e) {
+                    return '';
+                }
+
+                $.each(images, function() {
+                    parsedText += '<img src="' + this.img +'" width="' + this.w + '" height="' + this.h + '">';
+                });
             }
 
             return parsedText;

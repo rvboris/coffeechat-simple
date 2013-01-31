@@ -62,7 +62,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
     var pubnubDispatcher = {
         callback: function (jsonMessage) {
             parseMessage(jsonMessage, function (message) {
-                if (message.type() === 'text') {
+                if (message.type() === 'text' || message.type() === 'images') {
                     chatModel.messages.push(message);
                     chatModel.scrollToBottom();
                     chatModel.typingUsers.remove(function(typingUser) {
@@ -97,7 +97,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
                 }
             }, pubnubModel.historyHandler(function(message) {
                 parseMessage(message, function (message) {
-                    if (message.type() !== 'text') {
+                    if (message.type() !== 'text' || message.type() !== 'images') {
                         return;
                     }
 
@@ -373,13 +373,63 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
 
         $bootstrap('.username h2').tooltip();
 
-        $('.upload input').on('change', function(e) { 
+        $('.upload input').on('change', function(e) {
+            var responses = [];
+
+            var readyToSend = function() {
+                if (responses.length < e.target.files.length) {
+                    return;
+                }
+
+                responses = $.grep(responses, function(img) {
+                    return img !== null;
+                });
+
+                var message = new MessageModel();
+
+                message.time(moment().unix());
+                message.name(userModel.name());
+                message.text(JSON.stringify(responses) + '|images');
+
+                message = utils.prepareMessage(ko.toJS(message));
+
+                this.lastMessage(message);
+
+                chatModel.canSend(false);
+
+                pubnubModel.pubnub.publish({
+                    channel: pubnubModel.channel(),
+                    message: JSON.stringify(message),
+                    callback: $.proxy(function () {
+                        chatModel.canSend(true);
+                    }, this)
+                });
+            };
+
             $.each(e.target.files, function() {
                 var reader = new FileReader();
 
                 reader.onloadend = (function(file) {
                     return function(e) {
-                        console.log(e.target.result);
+                        $.post('/proxy', {
+                            image: e.target.result,
+                            name: file.name
+                        }).done(function(result) {
+                            if (result.success === true) {
+                                responses.push({
+                                    img: result.uri,
+                                    w: result.width,
+                                    h: result.height
+                                });
+                            } else {
+                                responses.push(null);
+                            }
+
+                            readyToSend();   
+                        }).error(function() {
+                            responses.push(null);
+                            readyToSend();
+                        });
                     };
                 })(this);
 
