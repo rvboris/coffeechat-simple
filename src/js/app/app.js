@@ -394,7 +394,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $edita
             message.time(moment().unix());
             message.name(userModel.name());
             message.text(JSON.stringify({
-                uid: response.payload.uid,
+                src: response.payload.uid + '.' + response.payload.ext,
                 w: response.payload.width,
                 h: response.payload.height
             }) + '|image');

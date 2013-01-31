@@ -53,7 +53,7 @@ define(['libs/knockout', 'libs/moment', 'libs/jquery', 'app/utils'], function (k
                     return '';
                 }
 
-                parsedText = '<img src="http://imm.io/' + image.uid +'" width="' + image.w + '" height="' + image.h + '">';
+                parsedText = '<img src="http://i.imm.io/' + image.src +'" width="' + image.w + '" height="' + image.h + '">';
             }
 
             return parsedText;
