@@ -159,11 +159,11 @@ define(['libs/jstorage'], function (jstorage) {
                 srcW = srcW * ratio;
             }
 
-            if (height > maxHeight) {
+            if (srcH > maxH) {
                 ratio = maxH / srcH;
 
                 resultSize.h = maxH;
-                resultSize.w = srcW * ration;
+                resultSize.w = srcW * ratio;
             }
 
             return resultSize;
