@@ -144,6 +144,29 @@ define(['libs/jstorage'], function (jstorage) {
                     paramExit: userModel.paramExit()
                 }
             });
+        },
+        imageScale: function(maxW, maxH, srcW, srcH) {
+            var ration = 0;
+            var resultSize = { w: srcW, h: srcH };
+
+            if (srcW > maxW){
+                ratio = maxW / srcW;
+
+                resultSize.w = maxW;
+                resultSize.h = srcH * ratio;
+
+                srcH = srcH * ratio;
+                srcW = srcW * ratio;
+            }
+
+            if (height > maxHeight) {
+                ratio = maxH / srcH;
+
+                resultSize.h = maxH;
+                resultSize.w = srcW * ration;
+            }
+
+            return resultSize;
         }
     };
 });

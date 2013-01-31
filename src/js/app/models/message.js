@@ -53,7 +53,9 @@ define(['libs/knockout', 'libs/moment', 'libs/jquery', 'app/utils'], function (k
                     return '';
                 }
 
-                parsedText = '<img src="http://i.imm.io/' + image.src +'" width="' + image.w + '" height="' + image.h + '">';
+                var imageSize = utils.imageScale(250, 250, image.w, image.h);
+
+                parsedText = '<img src="http://i.imm.io/' + image.src +'" width="' + imageSize.w + '" height="' + imageSize.h + '">';
             }
 
             return parsedText;
