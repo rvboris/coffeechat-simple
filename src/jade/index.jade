@@ -61,7 +61,7 @@ body
     //- Channel info section
     .row-fluid.controls
       .span3.username
-        a(href='#', data-bind='text: userModel.name()', data-html='Изменить имя') Гость
+        a(href='#', data-bind='text: userModel.name()', rel='tooltip', title='Изменить имя') Гость
       .span3.offset6.online
         span(data-bind='text: chatModel.usersOnline(), css: { muted: chatModel.online() === 0, "text-info": chatModel.online() === 1, "text-success": chatModel.online() > 1 }') нет пользователей
     
@@ -92,10 +92,10 @@ body
               input(type='text', name='text', placeholder='сообщение', maxlength='1500', autofocus='true', data-bind='enable: chatModel.canSend(), event: { keypress: chatModel.typing }').input-block-level
             .btn-group
               .uploader
-              a(data-bind='css: { "disabled": !chatModel.canSendPicture() }, click: chatModel.uploadImage', data-html='Отправить картинку').btn.btn-primary.picture
+              a(data-bind='css: { "disabled": !chatModel.canSendPicture() }, click: chatModel.uploadImage', rel='tooltip', title='Отправить картинку').btn.btn-primary.picture
                 i(data-bind='css: { "icon-picture": !chatModel.pictureLoading(), "icon-repeat": chatModel.pictureLoading(), "icon-spin": chatModel.pictureLoading() }').icon-white
 
-              button(type='submit', data-bind='enable: chatModel.canSend()', data-html='Отправить сообщение').btn.btn-primary.text
+              button(type='submit', data-bind='enable: chatModel.canSend()').btn.btn-primary.text
                 i.icon-comments.icon-white
                 span.hidden-phone Отправить
 
