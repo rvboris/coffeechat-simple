@@ -415,9 +415,9 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fancy
             });
         });
 
-        /*$fancybox("a[href$='.jpg'], a[href$='.jpeg'], a[href$='.png'], a[href$='.gif']").attr('rel', 'lightbox').fancybox({
+        $fancybox('.message img').fancybox({
             padding: 0
-        });*/
+        });
 
         ko.applyBindings(new MasterModel(), $('body').get(0));
     });
