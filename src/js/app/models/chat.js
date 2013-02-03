@@ -166,6 +166,10 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
 
             return true;
         }, this);
+
+        this.uploadImage = $.proxy(function() {
+            $uploader('.uploader').fineUploader('uploadStoredFiles');
+        }, this);
     };
 
     return function(pubnubModel, userModel) {

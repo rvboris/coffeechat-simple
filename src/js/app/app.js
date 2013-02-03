@@ -379,11 +379,20 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fancy
                 inputName: 'image'
             },
             button: $('.message-input .picture'),
-            multiple: false
+            autoUpload: false,
+            multiple: false,
+            validation: {
+                allowedExtensions: ['jpeg', 'jpg', 'gif', 'png']
+            }
         }).on('upload', function() {
             chatModel.pictureLoading(true);
         }).on('error', function() {
             chatModel.pictureLoading(false);
+             $notify('.notifications').notify({
+                type: 'error',
+                fadeOut: { enabled: true, delay: 3000 },
+                message: { text: 'Ошибка загрузки файла' }
+            }).show();
         }).on('complete', function(e, id, filename, response) {
             chatModel.pictureLoading(false);
 
@@ -415,9 +424,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fancy
             });
         });
 
-        $fancybox('.message img').fancybox({
-            padding: 0
-        });
+        $fancybox('.message img').fancybox({ padding: 0 });
 
         ko.applyBindings(new MasterModel(), $('body').get(0));
     });
