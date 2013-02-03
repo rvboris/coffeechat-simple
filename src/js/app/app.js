@@ -1,6 +1,6 @@
-define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/bootstrap.clickover', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/fresco', 'libs/bootstrap.editable', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'libs/fineuploader/jquery-plugin', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
+define(['compiled/templates', 'libs/modernizr', 'libs/bootstrap', 'libs/bootstrap.clickover', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/jquery.fancybox', 'libs/bootstrap.editable', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'libs/fineuploader/jquery-plugin', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
 
-function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fresco, $editable, $, $spin, ko, hasher, jstorage, moment, $uploader, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
+function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fancybox, $editable, $, $spin, ko, hasher, jstorage, moment, $uploader, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
     'use strict';
 
     $('#loader').spin();
@@ -414,6 +414,8 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fresc
                 }, this)
             });
         });
+
+        $fancybox("a[href$='.jpg'], a[href$='.jpeg'], a[href$='.png'], a[href$='.gif']").attr('rel', 'lightbox').fancybox();
 
         ko.applyBindings(new MasterModel(), $('body').get(0));
     });
