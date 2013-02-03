@@ -371,7 +371,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fancy
                 $(e.currentTarget).find('input').select();
             });
 
-        $bootstrap('.username h2').tooltip();
+        $bootstrap('.username a, a.picture, button.text').tooltip();
 
         $uploader('.uploader').fineUploader({
             request: {
