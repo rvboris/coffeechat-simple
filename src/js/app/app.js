@@ -414,12 +414,9 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fancy
                 }, this)
             });
         });
-        
+
         $fancybox("a[href$='.jpg'], a[href$='.jpeg'], a[href$='.png'], a[href$='.gif']").attr('rel', 'lightbox').fancybox({
-            padding: 0,
-            margin: [20, 60, 20, 60],
-            openEffect: 'elastic',
-            closeEffect: 'elastic'
+            padding: 0
         });
 
         ko.applyBindings(new MasterModel(), $('body').get(0));
