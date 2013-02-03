@@ -167,8 +167,8 @@ function ($, ko, utils, jstorage, $uploader, hasher, $bootstrap, $notify, $scrol
             return true;
         }, this);
 
-        this.uploadImage = $.proxy(function() {
-            $uploader('.uploader').fineUploader('uploadStoredFiles');
+        this.uploadImage = $.proxy(function(e) {
+            return !$('.picture').hasClass('disabled');
         }, this);
     };
 

@@ -379,7 +379,6 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fancy
                 inputName: 'image'
             },
             button: $('.message-input .picture'),
-            autoUpload: false,
             multiple: false,
             validation: {
                 allowedExtensions: ['jpeg', 'jpg', 'gif', 'png']
