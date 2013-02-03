@@ -1,6 +1,6 @@
-define(['libs/jquery', 'libs/knockout', 'app/utils', 'libs/jstorage', 'libs/hasher', 'libs/bootstrap', 'libs/bootstrap.notify', 'libs/jquery.scrollTo', 'libs/tinycon', 'libs/buzz', 'models/message'],
+define(['libs/jquery', 'libs/knockout', 'app/utils', 'libs/jstorage', 'libs/fineuploader/jquery-plugin', 'libs/hasher', 'libs/bootstrap', 'libs/bootstrap.notify', 'libs/jquery.scrollTo', 'libs/tinycon', 'libs/buzz', 'models/message'],
 
-function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinycon, Buzz, MessageModel) {
+function ($, ko, utils, jstorage, $uploader, hasher, $bootstrap, $notify, $scrollTo, Tinycon, Buzz, MessageModel) {
     var unreadCounter = 0;
     var lastTypeCheck = 0;
 
@@ -19,12 +19,12 @@ function ($, ko, utils, jstorage, hasher, $bootstrap, $notify, $scrollTo, Tinyco
         this.online = ko.observable(0);
         this.users = ko.observableArray();
         this.canSend = ko.observable(false);
+        this.pictureLoading = ko.observable(false);
 
         this.canSendPicture = ko.computed($.proxy(function() {
             return window.File && window.FileReader && window.FileList && window.Blob && this.canSend() && !this.pictureLoading();
         }, this));
 
-        this.pictureLoading = ko.observable(false);
 
         this.style = ko.observable({
             height: '0px'
