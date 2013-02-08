@@ -24,7 +24,7 @@ head
   if (env == 'development')
     link(rel='stylesheet', type='text/css', href='css/' + cssFileName + '?v' + version())
   else
-    link(rel='stylesheet', type='text/css', href='//' + cdnHost + '/css/' + cssFileName + '?v' + version())
+    link(rel='stylesheet', type='text/css', href='//' + cdnHost + '/css/' + cssFileName)
 
 body
   //if lt IE 8
@@ -62,7 +62,7 @@ body
     .row-fluid.controls
       .span3.username
         a(href='#', data-bind='text: userModel.name()', rel='tooltip', title='Изменить имя') Гость
-      .span3.offset6.online
+      .span3.offset6.online.hidden-phone
         span(data-bind='text: chatModel.usersOnline(), css: { muted: chatModel.online() === 0, "text-info": chatModel.online() === 1, "text-success": chatModel.online() > 1 }') нет пользователей
     
     //- Messages container

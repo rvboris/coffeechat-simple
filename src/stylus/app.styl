@@ -48,22 +48,18 @@ box-sizing()
         button
           width 50%
 
-  #username
-    padding 3px 0
-    font-size 14px
+  .username, .online
     line-height 30px
-    margin 0
-    font-weight normal
-    border-bottom 1px dashed #CCC
-    color #000
 
   .online
-    line-height 30px
     text-align right
-
+    
   @media (max-width: 767px)
     .online
       text-align left
+
+    .username
+      line-height 40px
 
   .messagebox
     box-sizing()
@@ -108,6 +104,10 @@ box-sizing()
 
       li
         float left
+
+  @media (max-width: 767px)
+    .messagebox
+      margin-top 0
 
   .message-input
     position relative
