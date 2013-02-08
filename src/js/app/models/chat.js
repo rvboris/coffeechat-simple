@@ -52,7 +52,8 @@ function ($, ko, utils, jstorage, $uploader, hasher, $bootstrap, $notify, $scrol
                     }
                 }, this), 900000); // 15 min
             } else {
-                Tinycon.setBubble(0);
+                unreadCounter = 0;
+                Tinycon.setBubble(unreadCounter);
                 clearTimeout(exitTimeout);
             }
         }, this));

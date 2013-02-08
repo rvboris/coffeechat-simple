@@ -97,7 +97,7 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fancy
                 }
             }, pubnubModel.historyHandler(function(message) {
                 parseMessage(message, function (message) {
-                    if (message.type() !== 'text' || message.type() !== 'image') {
+                    if (message.type() !== 'text' && message.type() !== 'image') {
                         return;
                     }
 
@@ -322,15 +322,25 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fancy
             }
         });
 
-        Visibility.change(function (e, state) {
-            if (state === 'hidden') {
-                return chatModel.isActive(false);
+        if (Visibility.isSupported()) {
+            Visibility.change(function () {
+                chatModel.isActive(!Visibility.hidden());
+            });
+        } else {
+            if (/*@cc_on!@*/false) {
+                $([window, document]).focusin(function() {
+                    chatModel.isActive(true);
+                }).focusout(function() {
+                    chatModel.isActive(false);
+                });
+            } else {
+                $(window).focus(function() {
+                    chatModel.isActive(true);
+                }).blur(function() {
+                    chatModel.isActive(false);
+                });
             }
-
-            if (state === 'visible') {
-                return chatModel.isActive(true);
-            }
-        });
+        }
 
         chatModel.isReady.subscribe(function(isReady) {
             if (isReady) {

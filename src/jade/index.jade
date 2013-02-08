@@ -21,7 +21,7 @@ head
 
   link(rel='icon', type='image/ico', href='img/favicon.ico')
 
-  if (env == 'development')
+  if (env == 'development' || env == 'debug')
     link(rel='stylesheet', type='text/css', href='css/' + cssFileName + '?v' + version())
   else
     link(rel='stylesheet', type='text/css', href='//' + cdnHost + '/css/' + cssFileName)
@@ -124,5 +124,8 @@ body
   //- Scripts
   if (env == 'development')
     script(defer='true', async="true", data-main='../src/js/config', src='../src/js/libs/require.js?v' + version())
+  else if (env == 'debug')
+    script(defer='true', async="true", src='js/require.js?v' + version())
+    script(defer='true', async="true", src='js/app.js?v' + version())
   else
     script(defer='true', async="true", src='//' + cdnHost + '/js/' + jsFileName)

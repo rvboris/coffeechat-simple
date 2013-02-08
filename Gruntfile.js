@@ -11,7 +11,7 @@ module.exports = function (grunt) {
     var cdnHost = 'cdn.coffeechat.ru';
     var cssFileName = randomString() + '.css';
     var jsFileName = randomString() + '.js';
-    
+
     var jsMinConfig = {};
     var cssMinConfig = {};
 
@@ -31,6 +31,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-mincss');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-wrap');
 
@@ -38,10 +39,10 @@ module.exports = function (grunt) {
         clean: {
             build: [
                 'public/css/*.css',
-                'public/js/*.js',
+                'public/js/*',
                 'public/*.html',
                 'src/stylus/compiled/*.css',
-                'src/js/compiled/*.js'
+                'src/js/compiled/*'
             ]
         },
         
@@ -86,12 +87,26 @@ module.exports = function (grunt) {
         },
         
         requirejs: {
-            main: {
+            production: {
                 options: {
                     name: 'config',
-                    out: 'src/js/compiled/require.js',
+                    out: 'src/js/compiled/app.js',
                     baseUrl: 'src/js/',
                     mainConfigFile: 'src/js/config.js',
+                    generateSourceMaps: false,
+                    preserveLicenseComments: false,
+                    optimize: 'none'
+                }
+            },
+            debug: {
+                options: {
+                    name: 'config',
+                    out: 'src/js/compiled/app.js',
+                    baseUrl: 'src/js/',
+                    mainConfigFile: 'src/js/config.js',
+                    generateSourceMaps: true,
+                    preserveLicenseComments: false,
+                    optimize: 'none'
                 }
             }
         },
@@ -146,6 +161,19 @@ module.exports = function (grunt) {
                 files: {
                     'public/index.html': 'src/jade/index.jade'
                 }
+            },
+            debug: {
+                options: {
+                    data: {
+                        env: 'debug',
+                        version: version,
+                        jsFileName: jsFileName,
+                        cssFileName: cssFileName
+                    }
+                },
+                files: {
+                    'public/index.html': 'src/jade/index.jade'
+                }
             }
         },
 
@@ -163,22 +191,25 @@ module.exports = function (grunt) {
             scripts: {
                 src: [
                     'src/js/libs/require.js',
-                    'src/js/compiled/require.js',
+                    'src/js/compiled/app.js',
                 ],
                 dest: 'src/js/compiled/require.js'
             },
-            scriptsDebug: {
-                src: [
-                    'src/js/libs/require.js',
-                    'src/js/compiled/require.js',
-                ],
-                dest: 'public/js/' + jsFileName
-            },
+        },
+
+        copy: {
+            debug: {
+                files: [
+
+                    { expand: true, cwd: 'src/js/libs', src: ['require.js'], dest: 'public/js'},
+                    { expand: true, cwd: 'src/js/compiled', src: ['app.*'], dest: 'public/js'}
+                ]
+            }
         }
     });
 
     grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'concat:styles', 'handlebars', 'wrap']);
     grunt.registerTask('development', ['main', 'bump', 'jade:development', 'mincss']);
-    grunt.registerTask('production', ['main', 'jade:production', 'requirejs', 'concat:scripts', 'uglify', 'mincss']);
-    grunt.registerTask('production-debug', ['main', 'jade:production', 'requirejs', 'concat:scriptsDebug', 'mincss']);
+    grunt.registerTask('production', ['main', 'jade:production', 'requirejs:production', 'concat:scripts', 'uglify', 'mincss']);
+    grunt.registerTask('debug', ['main', 'jade:debug', 'requirejs:debug', 'copy:debug']);
 };
