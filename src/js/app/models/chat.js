@@ -53,7 +53,7 @@ function ($, ko, utils, jstorage, $uploader, hasher, $bootstrap, $notify, $scrol
                 }, this), 900000); // 15 min
             } else {
                 unreadCounter = 0;
-                Tinycon.setBubble(unreadCounter);
+                Tinycon.reset();
                 clearTimeout(exitTimeout);
             }
         }, this));
@@ -61,15 +61,13 @@ function ($, ko, utils, jstorage, $uploader, hasher, $bootstrap, $notify, $scrol
         this.messages.subscribe($.proxy(function () {
             if (!this.isActive()) {
                 unreadCounter++;
-
+                
                 if (userModel.paramAudio()) {
                     incomingMessageSound.play();
                 }
-            } else {
-                unreadCounter = 0;
+
+                Tinycon.setBubble(unreadCounter);
             }
-            
-            Tinycon.setBubble(unreadCounter);
         }, this));
 
         this.style.subscribe($.proxy(function () {

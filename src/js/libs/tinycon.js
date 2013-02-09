@@ -1,4 +1,4 @@
-define([], function () {
+define(['app/utils'], function (utils) {
     /*!
      * Tinycon - A small library for manipulating the Favicon
      * Tom Moor, http://tommoor.com
@@ -251,7 +251,8 @@ define([], function () {
     };
 
     Tinycon.reset = function () {
-        Tinycon.setImage(originalFavicon);
+        setFaviconTag(originalFavicon + '?' + utils.randomString());
+        //Tinycon.setImage(originalFavicon);
     };
 
     Tinycon.setOptions(defaults);

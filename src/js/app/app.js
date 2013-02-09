@@ -322,25 +322,27 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fancy
             }
         });
 
-        if (Visibility.isSupported()) {
-            Visibility.change(function () {
-                chatModel.isActive(!Visibility.hidden());
-            });
-        } else {
-            if (/*@cc_on!@*/false) {
-                $([window, document]).focusin(function() {
-                    chatModel.isActive(true);
-                }).focusout(function() {
-                    chatModel.isActive(false);
+        (function() {
+            if (Visibility.isSupported()) {
+                Visibility.change(function () {
+                    chatModel.isActive(!Visibility.hidden());
                 });
             } else {
-                $(window).focus(function() {
-                    chatModel.isActive(true);
-                }).blur(function() {
-                    chatModel.isActive(false);
-                });
+                if (/*@cc_on!@*/false) {
+                    $([window, document]).focusin(function() {
+                        chatModel.isActive(true);
+                    }).focusout(function() {
+                        chatModel.isActive(false);
+                    });
+                } else {
+                    $(window).focus(function() {
+                        chatModel.isActive(true);
+                    }).blur(function() {
+                        chatModel.isActive(false);
+                    });
+                }
             }
-        }
+        })();
 
         chatModel.isReady.subscribe(function(isReady) {
             if (isReady) {

@@ -211,5 +211,5 @@ module.exports = function (grunt) {
     grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'concat:styles', 'handlebars', 'wrap']);
     grunt.registerTask('development', ['main', 'bump', 'jade:development', 'mincss']);
     grunt.registerTask('production', ['main', 'jade:production', 'requirejs:production', 'concat:scripts', 'uglify', 'mincss']);
-    grunt.registerTask('debug', ['main', 'jade:debug', 'requirejs:debug', 'copy:debug']);
+    grunt.registerTask('debug', ['main', 'bump', 'jade:debug', 'requirejs:debug', 'copy:debug']);
 };
