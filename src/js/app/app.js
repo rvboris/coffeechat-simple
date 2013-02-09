@@ -51,7 +51,13 @@ function (Templates, modernizr, $bootstrap, $clickover, $notify, bootbox, $fancy
         }
 
         if (utils.objectEquals(jsonMessage, chatModel.lastMessage())) {
-            message.name(message.repeatName);
+            if (chatModel.messageTime() !== null && moment().diff(chatModel.messageTime()) <= 180000) {
+                message.name(message.repeatName);
+            } else {
+                message.name(jsonMessage.name);
+            }
+
+            chatModel.messageTime(moment());
         } else {
             message.name(jsonMessage.name);
         }

@@ -1,7 +1,7 @@
 {
   "name": "Coffeechat",
   "description": "Simple private chat.",
-  "version": "0.0.212",
+  "version": "0.0.213",
   "engines": {
     "node": ">= 0.8.0"
   },

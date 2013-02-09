@@ -16,6 +16,7 @@ function ($, ko, utils, jstorage, $uploader, hasher, $bootstrap, $notify, $scrol
         this.messages = ko.observableArray();
         this.lastMessage = ko.observable();
         this.lastSystemMessage = ko.observable();
+        this.messageTime = ko.observable(null);
         this.online = ko.observable(0);
         this.users = ko.observableArray();
         this.canSend = ko.observable(false);
