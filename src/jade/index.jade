@@ -1,17 +1,4 @@
 !!! 5
-
-//if lt IE 7
-  html.no-js.lt-ie9.lt-ie8.lt-ie7
-//if IE 7
-  html.no-js.lt-ie9.lt-ie8
-//if IE 8
-  html.no-js.lt-ie9
-//if gt IE 8
-  html.no-js
-
-//if lt IE 9
-  script(src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js)
-    
 head
   meta(charset='utf-8')
   meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
@@ -19,7 +6,7 @@ head
 
   title Coffeechat
 
-  link(rel='icon', type='image/ico', href='img/favicon.ico')
+  link(rel='shortcut icon', type='image/x-icon', href='img/favicon.ico')
 
   if (env == 'development' || env == 'debug')
     link(rel='stylesheet', type='text/css', href='css/' + cssFileName + '?v' + version())
@@ -52,10 +39,10 @@ body
       .span4.offset5.main-buttons
         .btn-group
           button(type='button', data-bind='click: chatModel.invite', data-toggle='button').btn.btn-success.invite
-            i.icon-plus-sign.icon-white
+            i.icon-group.icon-white
             |  Пригласить
           button(type='button', data-bind='click: chatModel.exit').btn.btn-danger.exit
-            i.icon-signout.icon-white
+            i.icon-off.icon-white
             |  Выйти
 
     //- Channel info section
@@ -96,19 +83,13 @@ body
                 i(data-bind='css: { "icon-picture": !chatModel.pictureLoading(), "icon-repeat": chatModel.pictureLoading(), "icon-spin": chatModel.pictureLoading() }').icon-white
 
               button(type='submit', data-bind='enable: chatModel.canSend()').btn.btn-primary.text
-                i.icon-comments.icon-white
+                i.icon-comment-alt.icon-white
                 span.hidden-phone Отправить
 
     //- User params
     footer.row-fluid.hidden-phone
       .span2.social
-        .btn-group
-          a(href='https://twitter.com/share?url=http://coffeechat.ru', target="_blank").btn.btn-info
-            i.icon-twitter.icon-white
-          a(href='#').btn.btn-info
-            i.icon-facebook.icon-white
-          a(href='https://plus.google.com/share?url=http://coffeechat.ru', target="_blank").btn.btn-info
-            i.icon-google-plus.icon-white
+        .share42init(data-path='img/', data-url='http://coffeechat.ru', data-title='Чат приватного общения')
       .span4.audio
         span Звуковое уведомление
         button(type='button', data-bind='click: userModel.toogleParam("paramAudio")').btn.active
@@ -119,13 +100,16 @@ body
         button(type='button', data-bind='click: userModel.toogleParam("paramExit")').btn.active
           i(data-bind='css: { on: userModel.paramExit(), off: !userModel.paramExit(), "btn-info": userModel.paramExit(), "btn-inverse": !userModel.paramExit() }').btn
           i(data-bind='text: userModel.paramSwitcher(userModel.paramExit())').text
-      
-
+          
   //- Scripts
+
+  //if lt IE 9
+    script(src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js)
+
   if (env == 'development')
     script(defer='true', async="true", data-main='../src/js/config', src='../src/js/libs/require.js?v' + version())
   else if (env == 'debug')
-    script(defer='true', async="true", src='js/require.js?v' + version())
-    script(defer='true', async="true", src='js/app.js?v' + version())
+    script(src='js/require.js?v' + version())
+    script(src='js/app.js?v' + version())
   else
     script(defer='true', async="true", src='//' + cdnHost + '/js/' + jsFileName)
