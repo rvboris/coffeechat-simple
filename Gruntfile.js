@@ -188,13 +188,6 @@ module.exports = function (grunt) {
                 ],
                 dest: 'public/css/' + cssFileName
             },
-            elusive: {
-                src: [
-                    'src/css/elusive/*.css',
-                    'public/css/' + cssFileName
-                ],
-                dest: 'public/css/' + cssFileName
-            },
             scripts: {
                 src: [
                     'src/js/libs/require.js',
@@ -207,16 +200,20 @@ module.exports = function (grunt) {
         copy: {
             debug: {
                 files: [
-
                     { expand: true, cwd: 'src/js/libs', src: ['require.js'], dest: 'public/js'},
                     { expand: true, cwd: 'src/js/compiled', src: ['app.*'], dest: 'public/js'}
+                ]
+            },
+            elusive: {
+                files: [
+                    { expand: true, cwd: 'src/css/elusive', src: ['*.css'], dest: 'public/css'},
                 ]
             }
         }
     });
 
-    grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'concat:styles', 'handlebars', 'wrap']);
-    grunt.registerTask('development', ['main', 'bump', 'jade:development', 'mincss', 'concat:elusive']);
-    grunt.registerTask('production', ['main', 'jade:production', 'requirejs:production', 'concat:scripts', 'uglify', 'mincss', 'concat:elusive']);
-    grunt.registerTask('debug', ['main', 'bump', 'jade:debug', 'requirejs:debug', 'copy:debug', 'concat:elusive']);
+    grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'concat:styles', 'handlebars', 'wrap', 'copy:elusive']);
+    grunt.registerTask('development', ['main', 'bump', 'jade:development', 'mincss']);
+    grunt.registerTask('production', ['main', 'jade:production', 'requirejs:production', 'concat:scripts', 'uglify', 'mincss']);
+    grunt.registerTask('debug', ['main', 'bump', 'jade:debug', 'requirejs:debug', 'copy:debug']);
 };

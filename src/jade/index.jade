@@ -8,6 +8,8 @@ head
 
   link(rel='shortcut icon', type='image/x-icon', href='img/favicon.ico')
 
+  link(rel='stylesheet', type='text/css', href='css/elusive.css?v' + version())
+
   if (env == 'development' || env == 'debug')
     link(rel='stylesheet', type='text/css', href='css/' + cssFileName + '?v' + version())
   else
