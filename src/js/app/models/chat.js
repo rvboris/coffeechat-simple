@@ -77,7 +77,7 @@ function ($, ko, utils, jstorage, $uploader, hasher, $bootstrap, $notify, $scrol
 
         this.invite = function (data, event) {
             $bootstrap(event.currentTarget).popover('toggle');
-            $('#share-link').focus();
+            $('.share-link').focus();
         };
         
         this.exit = function () {

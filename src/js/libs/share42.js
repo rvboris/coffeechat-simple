@@ -8,97 +8,7 @@ define(['libs/jquery'], function ($) {
                     i = el.attr('data-image'),
                     d = el.attr('data-description'),
                     f = el.attr('data-path');
-
-                function fb_count(url) {
-                    var shares;
-                    $.getJSON('http://graph.facebook.com/?callback=?&ids=' + url, function (data) {
-                        shares = (data[url].shares || 0);
-                        el.find('a[data-count="fb"]').html('<span>' + shares + '</span>');
-                    });
-                }
-                fb_count(u);
-
-                function twi_count(url) {
-                    var shares;
-                    $.getJSON('http://urls.api.twitter.com/1/urls/count.json?callback=?&url=' + url, function (data) {
-                        shares = data.count;
-                        el.find('a[data-count="twi"]').html('<span>' + shares + '</span>');
-                    });
-                }
-                twi_count(u);
-
-                function mail_count(url) {
-                    var shares;
-                    $.getJSON('http://connect.mail.ru/share_count?callback=1&func=?&url_list=' + url, function (data) {
-                        shares = (data.hasOwnProperty(url)) ? data[url].shares : 0;
-                        el.find('a[data-count="mail"]').html('<span>' + shares + '</span>');
-                    });
-                }
-                mail_count(u);
-
-                function pin_count(url) {
-                    var shares;
-                    $.getJSON('http://api.pinterest.com/v1/urls/count.json?callback=?&url=' + url, function (data) {
-                        shares = data.count;
-                        el.find('a[data-count="pin"]').html('<span>' + shares + '</span>');
-                    });
-                }
-                pin_count(u);
-
-                function lnkd_count(url) {
-                    var shares;
-                    $.getJSON('http://www.linkedin.com/countserv/count/share?callback=?&url=' + url, function (data) {
-                        shares = data.count;
-                        el.find('a[data-count="lnkd"]').html('<span>' + shares + '</span>');
-                    });
-                }
-                lnkd_count(u);
-
-                function dlcs_count(url) {
-                    var shares;
-                    $.getJSON('http://feeds.delicious.com/v2/json/urlinfo/data?callback=?&url=' + url, function (data) {
-                        shares = data[0] ? data[0].total_posts : 0;
-                        el.find('a[data-count="dlcs"]').html('<span>' + shares + '</span>');
-                    });
-                }
-                dlcs_count(u);
-
-                function vk_count(url) {
-                    var shares;
-                    $.getScript('http://vk.com/share.php?act=count&index=' + idx + '&url=' + url);
-                    if (!window.VK) window.VK = {};
-                    window.VK.Share = {
-                        count: function (idx, number) {
-                            shares = number;
-                            $('div.share42init').eq(idx).find('a[data-count="vk"]').html('<span>' + shares + '</span>');
-                        }
-                    };
-                }
-                vk_count(u);
-
-                function odkl_count(url) {
-                    var shares;
-                    $.getScript('http://www.odnoklassniki.ru/dk?st.cmd=extLike&uid=' + idx + '&ref=' + url);
-                    if (!window.ODKL) window.ODKL = {};
-                    window.ODKL.updateCount = function (idx, number) {
-                        shares = number;
-                        $('div.share42init').eq(idx).find('a[data-count="odkl"]').html('<span>' + shares + '</span>');
-                    }
-                }
-                odkl_count(u);
-
-                function ya_count(url) {
-                    var shares;
-                    $.getScript('http://wow.ya.ru/ajax/share-counter.xml?url=' + url);
-                    if (!window.Ya) window.Ya = {};
-                    window.Ya.Share = {
-                        showCounter: function (number) {
-                            shares = number;
-                            $('div.share42init').eq(idx).find('a[data-count="ya"]').html('<span>' + shares + '</span>');
-                        }
-                    };
-                }
-                ya_count(u);
+                if (!u) u = location.href;
                 if (!f) {
                     function path(name) {
                         var sc = document.getElementsByTagName('script'),
@@ -117,7 +27,6 @@ define(['libs/jquery'], function ($) {
                     }
                     f = path('share42.js');
                 }
-                if (!u) u = location.href;
                 if (!t) t = document.title;
                 if (!i) i = '';
                 if (!d) {

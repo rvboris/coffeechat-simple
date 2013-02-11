@@ -2,9 +2,15 @@ box-sizing()
   box-sizing border-box
   -moz-box-sizing border-box
 
+input[type='text']:focus, .uneditable-input:focus, input[type='file']:focus, .btn:focus, a:focus
+  outline: 0
+
+input::-moz-focus-inner
+  border 0
+
 #loader
   margin 50px auto 0 auto
-
+  
 #app
   max-width 820px
   margin 0 auto
