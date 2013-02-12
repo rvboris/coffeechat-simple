@@ -1,4 +1,4 @@
-define(['libs/jstorage'], function (jstorage) {
+define(['libs/store'], function (store) {
     return {
         randomString: function () {
             return Math.random().toString(36).substring(7);
@@ -136,7 +136,7 @@ define(['libs/jstorage'], function (jstorage) {
             }
         },
         saveUserChannel: function(hashModel, userModel) {
-            jstorage.set(hashModel.channelId(), {
+            store.set(hashModel.channelId(), {
                 user: {
                     id: userModel.id(),
                     name: userModel.name(),

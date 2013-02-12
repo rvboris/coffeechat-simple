@@ -1,6 +1,6 @@
-define(['compiled/templates', 'libs/modernizr', 'libs/share42', 'libs/bootstrap', 'libs/bootstrap.clickover', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/jquery.fancybox', 'libs/bootstrap.editable', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/jstorage', 'libs/moment', 'libs/fineuploader/jquery-plugin', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
+define(['compiled/templates', 'libs/modernizr', 'libs/share42', 'libs/bootstrap', 'libs/bootstrap.clickover', 'libs/bootstrap.notify', 'libs/bootbox', 'libs/jquery.fancybox', 'libs/bootstrap.editable', 'libs/jquery', 'libs/jquery.spin', 'libs/knockout', 'libs/hasher', 'libs/store', 'libs/moment', 'libs/fineuploader/jquery-plugin', 'app/utils', 'app/commands', 'models/pubnub', 'libs/visibility', 'models/chat', 'models/hash', 'models/user', 'models/message'],
 
-function (Templates, modernizr, share42, $bootstrap, $clickover, $notify, bootbox, $fancybox, $editable, $, $spin, ko, hasher, jstorage, moment, $uploader, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
+function (Templates, modernizr, share42, $bootstrap, $clickover, $notify, bootbox, $fancybox, $editable, $, $spin, ko, hasher, store, moment, $uploader, utils, commands, pubnub, Visibility, chatModel, hashModel, userModel, MessageModel) {
     'use strict';
 
     $('#loader').spin();
@@ -257,7 +257,7 @@ function (Templates, modernizr, share42, $bootstrap, $clickover, $notify, bootbo
         if (currentHash !== '') {
             hashModel.fullHash(currentHash);
 
-            savedChannel = jstorage.get(hashModel.channelId());
+            savedChannel = store.get(hashModel.channelId());
 
             if (userModel.id() === '') {
                 if (savedChannel && savedChannel.user) {

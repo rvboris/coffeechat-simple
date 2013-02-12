@@ -1,6 +1,6 @@
-define(['libs/jquery', 'libs/knockout', 'app/utils', 'libs/jstorage', 'libs/fineuploader/jquery-plugin', 'libs/hasher', 'libs/bootstrap', 'libs/bootstrap.notify', 'libs/jquery.scrollTo', 'libs/tinycon', 'libs/buzz', 'models/message'],
+define(['libs/jquery', 'libs/knockout', 'app/utils', 'libs/store', 'libs/fineuploader/jquery-plugin', 'libs/hasher', 'libs/bootstrap', 'libs/bootstrap.notify', 'libs/jquery.scrollTo', 'libs/tinycon', 'libs/buzz', 'models/message'],
 
-function ($, ko, utils, jstorage, $uploader, hasher, $bootstrap, $notify, $scrollTo, Tinycon, Buzz, MessageModel) {
+function ($, ko, utils, store, $uploader, hasher, $bootstrap, $notify, $scrollTo, Tinycon, Buzz, MessageModel) {
     var unreadCounter = 0;
     var lastTypeCheck = 0;
 
@@ -81,7 +81,7 @@ function ($, ko, utils, jstorage, $uploader, hasher, $bootstrap, $notify, $scrol
         };
         
         this.exit = function () {
-            jstorage.flush();
+            store.clear();
 
             hasher.changed.active = false;
             hasher.replaceHash('');
