@@ -1,7 +1,7 @@
 {
   "name": "Coffeechat",
   "description": "Simple private chat.",
-  "version": "0.0.250",
+  "version": "0.0.251",
   "engines": {
     "node": ">= 0.8.0"
   },
@@ -12,7 +12,7 @@
     "grunt-contrib-handlebars": "git://github.com/gruntjs/grunt-contrib-handlebars/",
     "grunt-contrib-jade": "git://github.com/gruntjs/grunt-contrib-jade/",
     "grunt-contrib-jshint": "git://github.com/gruntjs/grunt-contrib-jshint",
-    "grunt-contrib-mincss": "git://github.com/gruntjs/grunt-contrib-mincss/",
+    "grunt-contrib-mincss": "git://github.com/gruntjs/grunt-contrib-cssmin/",
     "grunt-contrib-requirejs": "git://github.com/gruntjs/grunt-contrib-requirejs",
     "grunt-contrib-stylus": "git://github.com/gruntjs/grunt-contrib-stylus/",
     "grunt-contrib-uglify": "git://github.com/gruntjs/grunt-contrib-uglify",

@@ -28,7 +28,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jade');
     grunt.loadNpmTasks('grunt-contrib-handlebars');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
-    grunt.loadNpmTasks('grunt-contrib-mincss');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -71,7 +71,7 @@ module.exports = function (grunt) {
         watch: {
             scripts: {
                 files: ['src/stylus/*.styl', 'src/css/*.css', 'src/jade/*.jade'],
-                tasks: ['stylus', 'concat:styles', 'jade:development', 'mincss'],
+                tasks: ['stylus', 'concat:styles', 'jade:development', 'cssmin'],
             }
         },
 
@@ -178,7 +178,7 @@ module.exports = function (grunt) {
         },
 
         uglify: jsMinConfig,
-        mincss: cssMinConfig,
+        cssmin: cssMinConfig,
 
         concat: {
             styles: {
@@ -213,7 +213,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'concat:styles', 'handlebars', 'wrap', 'copy:elusive']);
-    grunt.registerTask('development', ['main', 'bump', 'jade:development', 'mincss']);
-    grunt.registerTask('production', ['main', 'jade:production', 'requirejs:production', 'concat:scripts', 'uglify', 'mincss']);
+    grunt.registerTask('development', ['main', 'bump', 'jade:development', 'cssmin']);
+    grunt.registerTask('production', ['main', 'jade:production', 'requirejs:production', 'concat:scripts', 'uglify', 'cssmin']);
     grunt.registerTask('debug', ['main', 'bump', 'jade:debug', 'requirejs:debug', 'copy:debug']);
 };
