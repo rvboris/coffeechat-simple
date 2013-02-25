@@ -370,6 +370,8 @@ function (Templates, modernizr, share42, $bootstrap, $clickover, $notify, bootbo
             userModel.name(params.newValue);
         });
 
+        $bootstrap("[rel='tooltip']").tooltip();
+
         $clickover('.main-buttons .invite').clickover({
             trigger: 'manual',
             placement: 'bottom',
