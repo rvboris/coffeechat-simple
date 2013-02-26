@@ -1,4 +1,4 @@
-define(['app/utils'], function (utils) {
+define(['libs/jquery', 'app/utils'], function ($, utils) {
     /*!
      * Tinycon - A small library for manipulating the Favicon
      * Tom Moor, http://tommoor.com
@@ -40,38 +40,11 @@ define(['app/utils'], function (utils) {
         mozilla: ua('mozilla') && !ua('chrome') && !ua('safari')
     };
 
-    // private methods
-    var getFaviconTag = function () {
-
-        var links = document.getElementsByTagName('link');
-
-        for (var i = 0, len = links.length; i < len; i++) {
-            if ((links[i].getAttribute('rel') || '').match(/\bicon\b/)) {
-                return links[i];
-            }
-        }
-
-        return false;
-    };
-
-    var removeFaviconTag = function () {
-
-        var links = document.getElementsByTagName('link');
-        var head = document.getElementsByTagName('head')[0];
-
-        for (var i = 0, len = links.length; i < len; i++) {
-            var exists = (typeof (links[i]) !== 'undefined');
-            if (exists && links[i].getAttribute('rel') === 'icon') {
-                head.removeChild(links[i]);
-            }
-        }
-    };
-
     var getCurrentFavicon = function () {
 
         if (!originalFavicon || !currentFavicon) {
-            var tag = getFaviconTag();
-            originalFavicon = currentFavicon = tag ? tag.getAttribute('href') : '/favicon.ico';
+            var tag = $('#favicon');
+            originalFavicon = currentFavicon = tag.length > 0 ? tag.attr('href') : '/favicon.ico';
         }
 
         return currentFavicon;
@@ -89,13 +62,7 @@ define(['app/utils'], function (utils) {
     };
 
     var setFaviconTag = function (url) {
-        removeFaviconTag();
-
-        var link = document.createElement('link');
-        link.type = 'image/x-icon';
-        link.rel = 'icon';
-        link.href = url;
-        document.getElementsByTagName('head')[0].appendChild(link);
+        $('#favicon').attr('href', url);
     };
 
     var log = function (message) {
@@ -252,7 +219,6 @@ define(['app/utils'], function (utils) {
 
     Tinycon.reset = function () {
         setFaviconTag(originalFavicon + '?' + utils.randomString());
-        //Tinycon.setImage(originalFavicon);
     };
 
     Tinycon.setOptions(defaults);
