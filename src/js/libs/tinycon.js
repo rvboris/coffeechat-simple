@@ -45,6 +45,8 @@ define(['libs/jquery', 'app/utils'], function ($, utils) {
         if (!originalFavicon || !currentFavicon) {
             var tag = $('#favicon');
             originalFavicon = currentFavicon = tag.length > 0 ? tag.attr('href') : '/favicon.ico';
+
+            console.log(tag.length > 0 ? tag.attr('href') : '/favicon.ico');
         }
 
         return currentFavicon;
@@ -218,6 +220,7 @@ define(['libs/jquery', 'app/utils'], function ($, utils) {
     };
 
     Tinycon.reset = function () {
+        if (!originalFavicon) return;
         setFaviconTag(originalFavicon + '?' + utils.randomString());
     };
 
