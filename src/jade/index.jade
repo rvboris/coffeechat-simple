@@ -8,7 +8,7 @@ head
 
   link(rel='shortcut icon', type='image/x-icon', href='img/favicon.ico')#favicon
 
-  link(rel='stylesheet', type='text/css', href='css/elusive.css?v' + version())
+  link(rel='stylesheet', type='text/css', href='css/font-awesome.css?v' + version())
 
   if (env == 'development' || env == 'debug')
     link(rel='stylesheet', type='text/css', href='css/' + cssFileName + '?v' + version())
@@ -16,9 +16,6 @@ head
     link(rel='stylesheet', type='text/css', href='//' + cdnHost + '/css/' + cssFileName)
 
 body
-  //if lt IE 8
-    p.chromeframe You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.
-
   //- Global notyfications
   .notifications.top-right
 
@@ -85,7 +82,7 @@ body
                 i(data-bind='css: { "icon-picture": !chatModel.pictureLoading(), "icon-repeat": chatModel.pictureLoading(), "icon-spin": chatModel.pictureLoading() }').icon-white
 
               button(type='submit', data-bind='enable: chatModel.canSend()').btn.btn-primary.text
-                i.icon-comment-alt.icon-white
+                i.icon-comments-alt.icon-white
                 span.hidden-phone Отправить
 
     //- User params
@@ -106,7 +103,7 @@ body
   //- Scripts
 
   //if lt IE 9
-    script(src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js)
+    script(src='http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js')
 
   if (env == 'development')
     script(defer='true', async="true", data-main='../src/js/config', src='../src/js/libs/require.js?v' + version())

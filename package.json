@@ -1,25 +1,28 @@
 {
   "name": "Coffeechat",
   "description": "Simple private chat.",
-  "version": "0.0.265",
+  "version": "0.0.275",
   "engines": {
     "node": ">= 0.8.0"
   },
   "dependencies": {
-    "grunt": "git://github.com/gruntjs/grunt",
-    "grunt-contrib-clean": "git://github.com/gruntjs/grunt-contrib-clean/",
-    "grunt-contrib-concat": "git://github.com/gruntjs/grunt-contrib-concat",
-    "grunt-contrib-handlebars": "git://github.com/gruntjs/grunt-contrib-handlebars/",
-    "grunt-contrib-jade": "git://github.com/gruntjs/grunt-contrib-jade/",
-    "grunt-contrib-jshint": "git://github.com/gruntjs/grunt-contrib-jshint",
-    "grunt-contrib-mincss": "git://github.com/gruntjs/grunt-contrib-cssmin/",
-    "grunt-contrib-requirejs": "git://github.com/gruntjs/grunt-contrib-requirejs",
-    "grunt-contrib-stylus": "git://github.com/gruntjs/grunt-contrib-stylus/",
-    "grunt-contrib-uglify": "git://github.com/gruntjs/grunt-contrib-uglify",
-    "grunt-contrib-watch": "git://github.com/gruntjs/grunt-contrib-watch",
-    "grunt-contrib-copy": "git://github.com/gruntjs/grunt-contrib-copy",
-    "grunt-bump": "git://github.com/ajpiano/grunt-bump/#grunt-0.4",
-    "grunt-wrap": "git://github.com/chrissrogers/grunt-wrap",
-    "http-proxy": ">= 0.8.7"
+    "grunt": "~0.4.1",
+    "grunt-contrib-clean": "~0.4.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-handlebars": "~0.5.8",
+    "grunt-contrib-jade": "~0.6.0",
+    "grunt-contrib-jshint": "~0.4.3",
+    "grunt-contrib-cssmin": "~0.6.0",
+    "grunt-contrib-requirejs": "~0.4.0",
+    "grunt-contrib-stylus": "~0.5.0",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-watch": "~0.4.3",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-bump": "~0.0.2",
+    "grunt-wrap": "~0.2.0",
+    "http-proxy": "~0.8.7"
+  },
+  "scripts": {
+    "preinstall": "npm install grunt-cli -g"
   }
 }

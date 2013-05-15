@@ -72,6 +72,9 @@ module.exports = function (grunt) {
             scripts: {
                 files: ['src/stylus/*.styl', 'src/css/*.css', 'src/jade/*.jade'],
                 tasks: ['stylus', 'concat:styles', 'jade:development', 'cssmin'],
+                options: {
+                    nospawn: true,
+                }
             }
         },
 
@@ -204,16 +207,17 @@ module.exports = function (grunt) {
                     { expand: true, cwd: 'src/js/compiled', src: ['app.*'], dest: 'public/js'}
                 ]
             },
-            elusive: {
+            awesome: {
                 files: [
-                    { expand: true, cwd: 'src/css/elusive', src: ['*.css'], dest: 'public/css'},
+                    { expand: true, cwd: 'src/css', src: ['font-awesome.css'], dest: 'public/css'},
                 ]
             }
         }
     });
 
-    grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'concat:styles', 'handlebars', 'wrap', 'copy:elusive']);
-    grunt.registerTask('development', ['main', 'bump', 'jade:development', 'cssmin']);
+    grunt.registerTask('main', ['clean:build', 'jshint', 'stylus', 'concat:styles', 'handlebars', 'wrap', 'copy:awesome']);
+    grunt.registerTask('development', ['main', 'bump', 'jade:development', 'cssmin', 'watch']);
     grunt.registerTask('production', ['main', 'jade:production', 'requirejs:production', 'concat:scripts', 'uglify', 'cssmin']);
     grunt.registerTask('debug', ['main', 'bump', 'jade:debug', 'requirejs:debug', 'copy:debug']);
+    grunt.registerTask('default', ['development']);
 };
