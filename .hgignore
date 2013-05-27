@@ -5,5 +5,6 @@ src/js/compiled
 src/stylus/compiled
 src/less/compiled
 public/index.html
-deploy/key
+deploy/.*\.pem$
+deploy/.*\.zip$
 .idea

@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 module.exports = function (grunt) {
 
     var version = function() {
@@ -8,7 +10,8 @@ module.exports = function (grunt) {
         return Math.random().toString(36).substring(7);
     };
 
-    var cdnHost = 'cdn.coffeechat.ru';
+    var now = moment().format('HH-mm-ss-DD-MM-YYYY');
+
     var cssFileName = randomString() + '.css';
     var jsFileName = randomString() + '.js';
 
@@ -32,17 +35,23 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-sftp-deploy');
+    grunt.loadNpmTasks('grunt-ssh');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-wrap');
 
     grunt.initConfig({
+        deploy: grunt.file.readJSON('deploy/settings.json'),
+
         clean: {
             build: [
                 'public/css/*.css',
                 'public/js/*',
                 'public/*.html',
                 'src/stylus/compiled/*.css',
-                'src/js/compiled/*'
+                'src/js/compiled/*',
+                'deploy/*.zip'
             ]
         },
         
@@ -155,7 +164,7 @@ module.exports = function (grunt) {
                 options: {
                     data: {
                         env: 'production',
-                        cdnHost: cdnHost,
+                        cdnHost: '<%= deploy.cdn %>',
                         version: version,
                         jsFileName: jsFileName,
                         cssFileName: cssFileName
@@ -212,6 +221,55 @@ module.exports = function (grunt) {
                     { expand: true, cwd: 'src/css', src: ['font-awesome.css'], dest: 'public/css'},
                 ]
             }
+        },
+
+        compress: {
+            main: {
+                options: {
+                    archive: 'deploy/coffeechat.ru-' + version() + '.zip'
+                },
+                files: [{ expand: true, cwd: './public', src: ['**'] }]
+            }
+        },
+
+        'sftp-deploy': {
+            main: {
+                auth: {
+                    host: '<%= deploy.host %>',
+                    authKey: 'main'
+                },
+                src: 'deploy',
+                dest: '/tmp',
+                exclusions: ['deploy/*.json', 'deploy/*.pem'],
+                server_sep: '/'
+            }
+        },
+
+        sshexec: {
+            backup: {
+                command: 'mkdir -p /srv/coffeechat.ru/backups/' + now + ' && cp -r /srv/coffeechat.ru/public /srv/coffeechat.ru/backups/' + now,
+                options: {
+                    host: '<%= deploy.host %>',
+                    username: '<%= deploy.username %>',
+                    privateKey: grunt.file.read('deploy/key.pem')
+                }
+            },
+            clean: {
+                command: 'rm -r /srv/coffeechat.ru/public',
+                options: {
+                    host: '<%= deploy.host %>',
+                    username: '<%= deploy.username %>',
+                    privateKey: grunt.file.read('deploy/key.pem')
+                }
+            },
+            unzip: {
+                command: 'unzip /tmp/coffeechat.ru-' + version() + '.zip -d /srv/coffeechat.ru/public',
+                options: {
+                    host: '<%= deploy.host %>',
+                    username: '<%= deploy.username %>',
+                    privateKey: grunt.file.read('deploy/key.pem')
+                }
+            },
         }
     });
 
@@ -220,4 +278,5 @@ module.exports = function (grunt) {
     grunt.registerTask('production', ['main', 'jade:production', 'requirejs:production', 'concat:scripts', 'uglify', 'cssmin']);
     grunt.registerTask('debug', ['main', 'bump', 'jade:debug', 'requirejs:debug', 'copy:debug']);
     grunt.registerTask('default', ['development']);
+    grunt.registerTask('deploy', ['production', 'compress', 'sftp-deploy', 'sshexec:backup', 'sshexec:clean', 'sshexec:unzip']);
 };
