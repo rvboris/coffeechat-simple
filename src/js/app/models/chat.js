@@ -48,7 +48,7 @@ function ($, ko, utils, store, $uploader, hasher, $bootstrap, $notify, $scrollTo
         this.isActive.subscribe($.proxy(function(active) {
             if (!active) {
                 exitTimeout = setTimeout($.proxy(function() {
-                    if (userModel.paramExit()) {
+                    if (userModel.paramExit() && this.messages().length > 0) {
                         this.exit();
                     }
                 }, this), 900000); // 15 min
