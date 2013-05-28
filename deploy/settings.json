@@ -1,5 +1,6 @@
 {
 	"host": "coffeechat.ru",
 	"username": "root",
-	"cdn": "cdn.coffeechat.ru"
+	"cdn": "cdn.coffeechat.ru",
+	"root": "/srv/coffeechat.ru"
 }

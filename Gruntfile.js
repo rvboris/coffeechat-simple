@@ -228,7 +228,10 @@ module.exports = function (grunt) {
                 options: {
                     archive: 'deploy/coffeechat.ru-' + version() + '.zip'
                 },
-                files: [{ expand: true, cwd: './public', src: ['**'] }]
+                files: [
+                    { expand: true, cwd: './public', src: ['**'] },
+                    { src: ['proxy.js'] }
+                ]
             }
         },
 
@@ -247,7 +250,9 @@ module.exports = function (grunt) {
 
         sshexec: {
             backup: {
-                command: 'mkdir -p /srv/coffeechat.ru/backups/' + now + ' && cp -r /srv/coffeechat.ru/public /srv/coffeechat.ru/backups/' + now,
+                command: 'mkdir -p <%= deploy.root %>/backups/' + now +
+                         ' && cp -r <%= deploy.root %>/public <%= deploy.root %>/backups/' + now +
+                         ' && cp <%= deploy.root %>/proxy.js <%= deploy.root %>/backups/' + now,
                 options: {
                     host: '<%= deploy.host %>',
                     username: '<%= deploy.username %>',
@@ -255,7 +260,7 @@ module.exports = function (grunt) {
                 }
             },
             clean: {
-                command: 'rm -r /srv/coffeechat.ru/public',
+                command: 'rm -r <%= deploy.root %>/public',
                 options: {
                     host: '<%= deploy.host %>',
                     username: '<%= deploy.username %>',
@@ -263,13 +268,30 @@ module.exports = function (grunt) {
                 }
             },
             unzip: {
-                command: 'unzip /tmp/coffeechat.ru-' + version() + '.zip -d /srv/coffeechat.ru/public',
+                command: 'unzip /tmp/coffeechat.ru-' + version() + '.zip -d <%= deploy.root %>/public' +
+                         ' && mv <%= deploy.root %>/public/proxy.js <%= deploy.root %>/proxy.js',
                 options: {
                     host: '<%= deploy.host %>',
                     username: '<%= deploy.username %>',
                     privateKey: grunt.file.read('deploy/key.pem')
                 }
             },
+            packages: {
+                command: '. ~/nvm/nvm.sh && cd <%= deploy.root %> && npm install http-proxy --silent',
+                options: {
+                    host: '<%= deploy.host %>',
+                    username: '<%= deploy.username %>',
+                    privateKey: grunt.file.read('deploy/key.pem')
+                }
+            },
+            restart: {
+                command: 'supervisorctl restart coffeechat',
+                options: {
+                    host: '<%= deploy.host %>',
+                    username: '<%= deploy.username %>',
+                    privateKey: grunt.file.read('deploy/key.pem')
+                }
+            }
         }
     });
 
@@ -278,5 +300,5 @@ module.exports = function (grunt) {
     grunt.registerTask('production', ['main', 'jade:production', 'requirejs:production', 'concat:scripts', 'uglify', 'cssmin']);
     grunt.registerTask('debug', ['main', 'bump', 'jade:debug', 'requirejs:debug', 'copy:debug']);
     grunt.registerTask('default', ['development']);
-    grunt.registerTask('deploy', ['production', 'compress', 'sftp-deploy', 'sshexec:backup', 'sshexec:clean', 'sshexec:unzip']);
+    grunt.registerTask('deploy', ['production', 'compress', 'sftp-deploy', 'sshexec']);
 };
