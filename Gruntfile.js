@@ -235,6 +235,16 @@ module.exports = function (grunt) {
             }
         },
 
+        bump: {
+            options: {
+                files: ['package.json'],
+                updateConfigs: [],
+                commit: false,
+                push: false,
+                createTag: false
+            }
+        },
+
         'sftp-deploy': {
             main: {
                 auth: {

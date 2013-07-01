@@ -1,7 +1,7 @@
 {
   "name": "Coffeechat",
   "description": "Simple private chat.",
-  "version": "0.0.279",
+  "version": "0.0.285",
   "engines": {
     "node": ">= 0.8.0"
   },
@@ -27,6 +27,6 @@
     "moment": "~2.0.0"
   },
   "scripts": {
-    "preinstall": "npm install grunt-cli -g"
+    "preinstall": "npm install grunt-cli jshint jake source-map -g"
   }
 }
