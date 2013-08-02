@@ -1,7 +1,7 @@
 {
   "name": "Coffeechat",
   "description": "Simple private chat.",
-  "version": "0.0.285",
+  "version": "0.0.289",
   "engines": {
     "node": ">= 0.8.0"
   },
@@ -9,7 +9,7 @@
     "grunt": ">=0.4.1",
     "grunt-contrib-clean": ">=0.4.1",
     "grunt-contrib-concat": ">=0.3.0",
-    "grunt-contrib-handlebars": ">=0.5.8",
+    "grunt-contrib-handlebars": ">=0.5.10",
     "grunt-contrib-jade": ">=0.6.0",
     "grunt-contrib-jshint": ">=0.4.3",
     "grunt-contrib-cssmin": ">=0.6.0",
