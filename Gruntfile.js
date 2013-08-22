@@ -141,9 +141,11 @@ module.exports = function (grunt) {
 
         wrap: {
             modules: {
-                src: 'src/js/compiled/templates.js',
+                src: ['src/js/compiled/templates.js'],
                 dest: '.',
-                wrapper: ['define(["libs/handlebars"], function (Handlebars) {', 'return this.Templates;});']
+                options: {
+                    wrapper: ['define(["libs/handlebars"], function (Handlebars) {', 'return this.Templates;});']
+                }
             }
         },
 
