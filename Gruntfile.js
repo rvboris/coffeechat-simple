@@ -155,7 +155,9 @@ module.exports = function (grunt) {
                     data: {
                         env: 'development',
                         version: version,
-                        cssFileName: cssFileName
+                        cssFileName: cssFileName,
+                        host: '<%= deploy.host %>',
+                        gaId: '<%= deploy.gaId %>'
                     }
                 },
                 files: {
@@ -169,7 +171,9 @@ module.exports = function (grunt) {
                         cdnHost: '<%= deploy.cdn %>',
                         version: version,
                         jsFileName: jsFileName,
-                        cssFileName: cssFileName
+                        cssFileName: cssFileName,
+                        host: '<%= deploy.host %>',
+                        gaId: '<%= deploy.gaId %>'
                     }
                 },
                 files: {
@@ -182,7 +186,9 @@ module.exports = function (grunt) {
                         env: 'debug',
                         version: version,
                         jsFileName: jsFileName,
-                        cssFileName: cssFileName
+                        cssFileName: cssFileName,
+                        host: '<%= deploy.host %>',
+                        gaId: '<%= deploy.gaId %>'
                     }
                 },
                 files: {
@@ -228,7 +234,7 @@ module.exports = function (grunt) {
         compress: {
             main: {
                 options: {
-                    archive: 'deploy/coffeechat.ru-' + version() + '.zip'
+                    archive: 'deploy/<%= deploy.host %>-' + version() + '.zip'
                 },
                 files: [
                     { expand: true, cwd: './public', src: ['**'] },
