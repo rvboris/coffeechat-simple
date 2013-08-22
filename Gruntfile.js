@@ -280,7 +280,7 @@ module.exports = function (grunt) {
                 }
             },
             unzip: {
-                command: 'unzip /tmp/coffeechat.ru-' + version() + '.zip -d <%= deploy.root %>/public' +
+                command: 'unzip /tmp/<%= deploy.host %>-' + version() + '.zip -d <%= deploy.root %>/public' +
                          ' && mv <%= deploy.root %>/public/proxy.js <%= deploy.root %>/proxy.js',
                 options: {
                     host: '<%= deploy.host %>',
