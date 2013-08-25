@@ -44,6 +44,12 @@ module.exports = function (grunt) {
     grunt.initConfig({
         deploy: grunt.file.readJSON('deploy/settings.json'),
 
+        sshAuth: {
+            host: '<%= deploy.host %>',
+            username: '<%= deploy.username %>',
+            privateKey: grunt.file.read('deploy/key.pem')
+        },
+
         clean: {
             build: [
                 'public/css/*.css',
@@ -271,44 +277,24 @@ module.exports = function (grunt) {
                 command: 'mkdir -p <%= deploy.root %>/backups/' + now +
                          ' && cp -r <%= deploy.root %>/public <%= deploy.root %>/backups/' + now +
                          ' && cp <%= deploy.root %>/proxy.js <%= deploy.root %>/backups/' + now,
-                options: {
-                    host: '<%= deploy.host %>',
-                    username: '<%= deploy.username %>',
-                    privateKey: grunt.file.read('deploy/key.pem')
-                }
+                options: '<%= sshAuth %>'
             },
             clean: {
                 command: 'rm -r <%= deploy.root %>/public',
-                options: {
-                    host: '<%= deploy.host %>',
-                    username: '<%= deploy.username %>',
-                    privateKey: grunt.file.read('deploy/key.pem')
-                }
+                options: '<%= sshAuth %>'
             },
             unzip: {
                 command: 'unzip /tmp/<%= deploy.host %>-' + version() + '.zip -d <%= deploy.root %>/public' +
                          ' && mv <%= deploy.root %>/public/proxy.js <%= deploy.root %>/proxy.js',
-                options: {
-                    host: '<%= deploy.host %>',
-                    username: '<%= deploy.username %>',
-                    privateKey: grunt.file.read('deploy/key.pem')
-                }
+                options: '<%= sshAuth %>'
             },
             packages: {
-                command: '. ~/nvm/nvm.sh && cd <%= deploy.root %> && npm install http-proxy --silent',
-                options: {
-                    host: '<%= deploy.host %>',
-                    username: '<%= deploy.username %>',
-                    privateKey: grunt.file.read('deploy/key.pem')
-                }
+                command: 'cd <%= deploy.root %> && npm install http-proxy opter --silent',
+                options: '<%= sshAuth %>'
             },
             restart: {
-                command: 'supervisorctl restart coffeechat',
-                options: {
-                    host: '<%= deploy.host %>',
-                    username: '<%= deploy.username %>',
-                    privateKey: grunt.file.read('deploy/key.pem')
-                }
+                command: 'pm2 reload coffeechat',
+                options: '<%= sshAuth %>'
             }
         }
     });

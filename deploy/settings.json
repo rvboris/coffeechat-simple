@@ -1,7 +1,7 @@
 {
 	"host": "coffeechat.ru",
-	"username": "root",
-	"cdn": "cdn.coffeechat.ru",
+	"username": "deploy",
+	"cdn": "coffeechat.ru",
 	"root": "/srv/coffeechat.ru",
 	"gaId": "UA-43436828-1"
 }
