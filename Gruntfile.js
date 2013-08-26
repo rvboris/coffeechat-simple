@@ -274,9 +274,11 @@ module.exports = function (grunt) {
 
         sshexec: {
             backup: {
-                command: 'mkdir -p <%= deploy.root %>/backups/' + now +
-                         ' && cp -r <%= deploy.root %>/public <%= deploy.root %>/backups/' + now +
-                         ' && cp <%= deploy.root %>/proxy.js <%= deploy.root %>/backups/' + now,
+                command: [
+                    'mkdir -p <%= deploy.root %>/backups/' + now,
+                    'cp -r <%= deploy.root %>/public <%= deploy.root %>/backups/' + now,
+                    'cp <%= deploy.root %>/proxy.js <%= deploy.root %>/backups/' + now
+                ].join(' && '),
                 options: '<%= sshAuth %>'
             },
             clean: {
@@ -284,8 +286,10 @@ module.exports = function (grunt) {
                 options: '<%= sshAuth %>'
             },
             unzip: {
-                command: 'unzip /tmp/<%= deploy.host %>-' + version() + '.zip -d <%= deploy.root %>/public' +
-                         ' && mv <%= deploy.root %>/public/proxy.js <%= deploy.root %>/proxy.js',
+                command: [
+                    'unzip /tmp/<%= deploy.host %>-' + version() + '.zip -d <%= deploy.root %>/public',
+                    'mv <%= deploy.root %>/public/proxy.js <%= deploy.root %>/proxy.js'
+                ].join(' && '),
                 options: '<%= sshAuth %>'
             },
             packages: {
