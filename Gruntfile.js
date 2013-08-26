@@ -23,7 +23,7 @@ module.exports = function (grunt) {
     cssMinConfig.main = {};
     cssMinConfig.main.files = {};
     cssMinConfig.main.files['public/css/' + cssFileName] = 'public/css/' + cssFileName;
-    
+
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -60,7 +60,7 @@ module.exports = function (grunt) {
                 'deploy/*.zip'
             ]
         },
-        
+
         jshint: {
             main: ['src/js/config.js', 'src/js/app/*.js'],
             options: {
@@ -103,7 +103,7 @@ module.exports = function (grunt) {
                 }
             }
         },
-        
+
         requirejs: {
             production: {
                 options: {
@@ -277,12 +277,16 @@ module.exports = function (grunt) {
                 command: [
                     'mkdir -p <%= deploy.root %>/backups/' + now,
                     'cp -r <%= deploy.root %>/public <%= deploy.root %>/backups/' + now,
+                    'touch <%= deploy.root %>/proxy.js',
                     'cp <%= deploy.root %>/proxy.js <%= deploy.root %>/backups/' + now
                 ].join(' && '),
                 options: '<%= sshAuth %>'
             },
             clean: {
-                command: 'rm -r <%= deploy.root %>/public',
+                command: [
+                    'pm2 stop coffeechat',
+                    'rm -r <%= deploy.root %>/public'
+                ].join(' && '),
                 options: '<%= sshAuth %>'
             },
             unzip: {
@@ -297,7 +301,7 @@ module.exports = function (grunt) {
                 options: '<%= sshAuth %>'
             },
             restart: {
-                command: 'pm2 reload coffeechat',
+                command: 'pm2 start ~/.pm2/coffeechat.json',
                 options: '<%= sshAuth %>'
             }
         }
